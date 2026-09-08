@@ -1,0 +1,86 @@
+{
+  "@@locale": "hi",
+  "tabToday": "आज",
+  "tabInsights": "रिपोर्ट्स",
+  "@tabInsights": {
+    "description": "A warm, non-clinical term for the medical report tab."
+  },
+  "tabSanctuary": "सेंक्चुअरी",
+  "@tabSanctuary": {
+    "description": "A term for the calming space / resource library."
+  },
+  "greetingEvening": "शुभ संध्या।",
+  "logCycle": "साइकिल लॉग करें",
+  "cycleDay": "दिन {day}",
+  "@cycleDay": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "catchUpTitle": "पिछला ट्रैक करें",
+  "dateYesterday": "कल",
+  "statusMissed": "छूट गया",
+  "statusTaken": "लिया गया",
+  "setupRoutinePrompt": "दवा का नियम सेट करें",
+  "medicinePhaseLabel": "दवा · दिन {day} / {total}",
+  "@medicinePhaseLabel": {
+    "placeholders": {
+      "day": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "breakPhaseLabel": "ट्रीटमेंट ब्रेक · दिन {day} / {total}",
+  "@breakPhaseLabel": {
+    "placeholders": {
+      "day": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "noMedicationRequired": "आज कोई दवा लेने की आवश्यकता नहीं है।",
+  "scheduledFor": "समय: {time}",
+  "@scheduledFor": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "takenAt": "लिया गया समय: {time}",
+  "@takenAt": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "markAsTaken": "लिया गया मार्क करें",
+  "cycleLogTitle": "साइकिल लॉग",
+  "currentlyOnDay": "अभी दिन {day} पर हैं",
+  "@currentlyOnDay": {
+    "placeholders": {
+      "day": {"type": "int"}
+    }
+  },
+  "tapToLogPeriod": "अपना पीरियड लॉग करने के लिए टैप करें",
+  "allCaughtUp": "सब कुछ अप-टू-डेट है।",
+  "settingsTitle": "सेटिंग्स",
+  "settingsDataPrivacy": "डेटा और प्राइवेसी",
+  "settingsOfflineBadge": "100% ऑफलाइन डिवाइस। कोई क्लाउड सर्वर नहीं।",
+  "settingsExportBackup": "एन्क्रिप्टेड बैकअप एक्सपोर्ट करें",
+  "settingsExportBackupDesc": "अपने डेटा को स्थानीय रूप से AES-256 एन्क्रिप्टेड फ़ाइल के रूप में सहेजें",
+  "settingsHelpTesting": "सहायता और परीक्षण",
+  "settingsFeedback": "फीडबैक भेजें / समस्या की रिपोर्ट करें",
+  "settingsDiagnostics": "अनाम डायग्नोस्टिक्स एक्सपोर्ट करें",
+  "settingsTriggerCrash": "टेस्ट क्रैश ट्रिगर करें",
+  "settingsEraseData": "डिवाइस से सारा डेटा मिटाएं",
+  "settingsEraseDataDialogTitle": "सारा डेटा मिटाएं?",
+  "settingsEraseDataDialogBody": "यह इस फोन से सभी साइकिल, दवा और लक्षणों के रिकॉर्ड को तुरंत मिटा देता है। इस कार्रवाई को वापस नहीं लिया जा सकता।",
+  "buttonCancel": "रद्द करें",
+  "buttonErase": "मिटाएं",
+  "buttonSaveLog": "लॉग सहेजें",
+  "logPeriodTitle": "पीरियड लॉग करें",
+  "flowIntensityTitle": "बहाव की तीव्रता",
+  "flowLight": "हल्का",
+  "flowMedium": "माध्यम",
+  "flowHeavy": "भारी",
+  "flowSpotting": "स्पॉटिंग",
+  "symptomsTitle": "लक्षण"
+}

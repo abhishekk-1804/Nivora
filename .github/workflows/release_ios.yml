@@ -1,0 +1,41 @@
+name: iOS Release Build
+
+on:
+  push:
+    tags:
+      - 'v*' # Triggers workflow when you push a tag like v1.0.0
+
+jobs:
+  build:
+    name: Build iOS IPA
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Get Dependencies
+        run: flutter pub get
+
+      - name: Run Build Runner
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Run Test Suite
+        run: flutter test
+        
+      # Note: This builds an unsigned IPA. To build a signed IPA ready for TestFlight/App Store,
+      # you must upload your Apple Certificates and Provisioning Profiles to GitHub Secrets.
+      - name: Build IPA (No Codesign)
+        run: flutter build ipa --release --no-codesign
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-release-ipa
+          path: build/ios/ipa/*.ipa
+          retention-days: 7

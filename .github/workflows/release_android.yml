@@ -1,0 +1,47 @@
+name: Android Release Build
+
+on:
+  push:
+    tags:
+      - 'v*' # Triggers workflow when you push a tag like v1.0.0
+
+jobs:
+  build:
+    name: Build Android App Bundle
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Get Dependencies
+        run: flutter pub get
+
+      - name: Run Build Runner
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Run Test Suite
+        run: flutter test
+        
+      # Note: To sign this bundle for the Google Play Store, you will need to add 
+      # your keystore.jks and passwords to GitHub Secrets and configure android/key.properties.
+      - name: Build AAB
+        run: flutter build appbundle --release
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release-aab
+          path: build/app/outputs/bundle/release/app-release.aab
+          retention-days: 7

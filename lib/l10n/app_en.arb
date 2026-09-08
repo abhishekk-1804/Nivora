@@ -1,0 +1,86 @@
+{
+  "@@locale": "en",
+  "tabToday": "Today",
+  "tabInsights": "Insights",
+  "@tabInsights": {
+    "description": "A warm, non-clinical term for the medical report tab."
+  },
+  "tabSanctuary": "Sanctuary",
+  "@tabSanctuary": {
+    "description": "A term for the calming space / resource library."
+  },
+  "greetingEvening": "Good evening.",
+  "logCycle": "Log Cycle",
+  "cycleDay": "Day {day}",
+  "@cycleDay": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "catchUpTitle": "Catch Up",
+  "dateYesterday": "Yesterday",
+  "statusMissed": "Missed",
+  "statusTaken": "Taken",
+  "setupRoutinePrompt": "Set up a medication routine",
+  "medicinePhaseLabel": "Medicine · Day {day} / {total}",
+  "@medicinePhaseLabel": {
+    "placeholders": {
+      "day": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "breakPhaseLabel": "Treatment Break · Day {day} / {total}",
+  "@breakPhaseLabel": {
+    "placeholders": {
+      "day": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "noMedicationRequired": "No medication required today.",
+  "scheduledFor": "Scheduled for {time}",
+  "@scheduledFor": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "takenAt": "Taken at {time}",
+  "@takenAt": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "markAsTaken": "Mark as Taken",
+  "cycleLogTitle": "Cycle Log",
+  "currentlyOnDay": "Currently on Day {day}",
+  "@currentlyOnDay": {
+    "placeholders": {
+      "day": {"type": "int"}
+    }
+  },
+  "tapToLogPeriod": "Tap to log your period",
+  "allCaughtUp": "You're all caught up.",
+  "settingsTitle": "Settings",
+  "settingsDataPrivacy": "Data & Privacy",
+  "settingsOfflineBadge": "100% Offline Device. Zero cloud servers.",
+  "settingsExportBackup": "Export Encrypted Backup",
+  "settingsExportBackupDesc": "Save your data locally as an AES-256 encrypted file",
+  "settingsHelpTesting": "Help & Testing",
+  "settingsFeedback": "Send Feedback / Report an Issue",
+  "settingsDiagnostics": "Export Anonymous Diagnostics",
+  "settingsTriggerCrash": "Trigger Test Crash",
+  "settingsEraseData": "Erase All Data on Device",
+  "settingsEraseDataDialogTitle": "Erase All Data?",
+  "settingsEraseDataDialogBody": "This immediately wipes all cycle, medication, and symptom records from this phone. This action cannot be undone.",
+  "buttonCancel": "Cancel",
+  "buttonErase": "Erase",
+  "buttonSaveLog": "Save Log",
+  "logPeriodTitle": "Log Period",
+  "flowIntensityTitle": "Flow Intensity",
+  "flowLight": "Light",
+  "flowMedium": "Medium",
+  "flowHeavy": "Heavy",
+  "flowSpotting": "Spotting",
+  "symptomsTitle": "Symptoms"
+}

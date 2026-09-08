@@ -1,0 +1,86 @@
+{
+  "@@locale": "es",
+  "tabToday": "Hoy",
+  "tabInsights": "Análisis",
+  "@tabInsights": {
+    "description": "A warm, non-clinical term for the medical report tab."
+  },
+  "tabSanctuary": "Santuario",
+  "@tabSanctuary": {
+    "description": "A term for the calming space / resource library."
+  },
+  "greetingEvening": "Buenas noches.",
+  "logCycle": "Registrar Ciclo",
+  "cycleDay": "Día {day}",
+  "@cycleDay": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "catchUpTitle": "Ponerse al Día",
+  "dateYesterday": "Ayer",
+  "statusMissed": "No tomado",
+  "statusTaken": "Tomado",
+  "setupRoutinePrompt": "Configurar una rutina de medicación",
+  "medicinePhaseLabel": "Medicamento · Día {day} / {total}",
+  "@medicinePhaseLabel": {
+    "placeholders": {
+      "day": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "breakPhaseLabel": "Descanso del tratamiento · Día {day} / {total}",
+  "@breakPhaseLabel": {
+    "placeholders": {
+      "day": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "noMedicationRequired": "No se requiere medicación hoy.",
+  "scheduledFor": "Programado para las {time}",
+  "@scheduledFor": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "takenAt": "Tomado a las {time}",
+  "@takenAt": {
+    "placeholders": {
+      "time": {"type": "String"}
+    }
+  },
+  "markAsTaken": "Marcar como tomado",
+  "cycleLogTitle": "Registro del Ciclo",
+  "currentlyOnDay": "Actualmente en el Día {day}",
+  "@currentlyOnDay": {
+    "placeholders": {
+      "day": {"type": "int"}
+    }
+  },
+  "tapToLogPeriod": "Toca para registrar tu período",
+  "allCaughtUp": "Estás al día.",
+  "settingsTitle": "Ajustes",
+  "settingsDataPrivacy": "Datos y Privacidad",
+  "settingsOfflineBadge": "100% Offline en este dispositivo. Cero servidores en la nube.",
+  "settingsExportBackup": "Exportar Copia de Seguridad Cifrada",
+  "settingsExportBackupDesc": "Guarda tus datos localmente como archivo AES-256 cifrado",
+  "settingsHelpTesting": "Ayuda y Pruebas",
+  "settingsFeedback": "Enviar comentarios / Reportar un problema",
+  "settingsDiagnostics": "Exportar Diagnósticos Anónimos",
+  "settingsTriggerCrash": "Provocar Fallo de Prueba",
+  "settingsEraseData": "Borrar Todos los Datos del Dispositivo",
+  "settingsEraseDataDialogTitle": "¿Borrar Todos los Datos?",
+  "settingsEraseDataDialogBody": "Esto borra inmediatamente todos los registros de ciclo, medicación y síntomas de este teléfono. Esta acción no se puede deshacer.",
+  "buttonCancel": "Cancelar",
+  "buttonErase": "Borrar",
+  "buttonSaveLog": "Guardar Registro",
+  "logPeriodTitle": "Registrar Período",
+  "flowIntensityTitle": "Intensidad del Flujo",
+  "flowLight": "Ligero",
+  "flowMedium": "Moderado",
+  "flowHeavy": "Abundante",
+  "flowSpotting": "Manchado",
+  "symptomsTitle": "Síntomas"
+}
