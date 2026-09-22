@@ -3,12 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:imyra_app/main.dart';
-import 'package:imyra_app/core/widgets/imyra_logo.dart';
-import 'package:imyra_app/core/providers/database_provider.dart';
-import 'package:imyra_app/core/database/app_database.dart';
+import 'package:nivora_app/main.dart';
+import 'package:nivora_app/core/widgets/nivora_logo.dart';
+import 'package:nivora_app/core/providers/database_provider.dart';
+import 'package:nivora_app/core/database/app_database.dart';
 import 'package:drift/native.dart';
-import 'package:imyra_app/core/providers/preferences_provider.dart';
+import 'package:nivora_app/core/providers/preferences_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // ── Shared channel mock helpers ─────────────────────────────────────────────
@@ -91,11 +91,11 @@ void main() {
       expect(
         find
             .descendant(
-                of: find.byType(Stack), matching: find.byType(ImyraLogo))
+                of: find.byType(Stack), matching: find.byType(NivoraLogo))
             .last,
         findsOneWidget,
         reason:
-            'Privacy overlay with ImyraLogo must be visible when app goes inactive',
+            'Privacy overlay with NivoraLogo must be visible when app goes inactive',
       );
 
       // ── Resume: backgrounded < 10 s, so no biometric prompt fires ────────

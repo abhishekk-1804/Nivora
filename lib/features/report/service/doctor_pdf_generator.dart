@@ -28,7 +28,7 @@ class DoctorPdfGenerator {
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('IMYRA CLINICAL REPORT', style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold, color: PdfColors.deepPurple900)),
+                  pw.Text('NIVORA CLINICAL REPORT', style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold, color: PdfColors.deepPurple900)),
                   pw.Text('Patient ID: ____________________', style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey700)),
                 ]
               ),
@@ -246,7 +246,7 @@ class DoctorPdfGenerator {
   }
 
   static Future<void> sharePdf(Uint8List bytes) async {
-    await Printing.sharePdf(bytes: bytes, filename: 'Ila_clinical_summary.pdf');
+    await Printing.sharePdf(bytes: bytes, filename: 'nivora_clinical_summary.pdf');
   }
 
   static pw.Widget _buildStatBlock(String label, String value) {

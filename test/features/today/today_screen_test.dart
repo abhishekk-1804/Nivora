@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:imyra_app/features/today/presentation/today_screen.dart';
-import 'package:imyra_app/core/providers/database_provider.dart';
-import 'package:imyra_app/core/database/app_database.dart';
-import 'package:imyra_app/core/providers/preferences_provider.dart';
+import 'package:nivora_app/features/today/presentation/today_screen.dart';
+import 'package:nivora_app/core/providers/database_provider.dart';
+import 'package:nivora_app/core/database/app_database.dart';
+import 'package:nivora_app/core/providers/preferences_provider.dart';
 import 'package:drift/native.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

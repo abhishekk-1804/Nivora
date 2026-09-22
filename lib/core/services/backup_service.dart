@@ -40,17 +40,18 @@ class BackupService {
     // 3. Write to temporary file with timestamp so repeated exports don't overwrite each other
     final tempDir = await getTemporaryDirectory();
     final stamp = DateTime.now().toIso8601String().replaceAll(':', '-').replaceAll('.', '-').substring(0, 19);
-    final file = File('${tempDir.path}/imyradata_$stamp.imyrabackup');
+    final file = File('${tempDir.path}/nivoradata_$stamp.nivorabackup');
     await file.writeAsString(finalPayload);
 
     // 4. Native Share
     // ignore: deprecated_member_use
-    await Share.shareXFiles([XFile(file.path)], subject: 'Imyra Encrypted Backup');
+    await Share.shareXFiles([XFile(file.path)], subject: 'Nivora Encrypted Backup');
   }
 
   static Future<void> restoreEncryptedBackup(AppDatabase db, PlatformFile file, String passphrase) async {
-    if (!file.name.toLowerCase().endsWith('.imyrabackup')) {
-      throw const FormatException('Invalid file type. Please select a .imyrabackup file.');
+    final lowerName = file.name.toLowerCase();
+    if (!lowerName.endsWith('.nivorabackup') && !lowerName.endsWith('.imyrabackup')) {
+      throw const FormatException('Invalid file type. Please select a .nivorabackup or .imyrabackup file.');
     }
 
     // S-04 fix: file.path can be null on Android when the file is picked from

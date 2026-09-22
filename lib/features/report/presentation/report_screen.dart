@@ -273,7 +273,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                             )
                           else
                             const Text(
-                              'Generates a human-readable PDF summary of your cycle health, symptoms, and medications to share with your healthcare provider. (This is different from the encrypted .imyrabackup data file in Settings).',
+                              'Generates a human-readable PDF summary of your cycle health, symptoms, and medications to share with your healthcare provider. (This is different from the encrypted .nivorabackup data file in Settings).',
                               style: TextStyle(
                                   fontSize: 12,
                                   color: AppColors.mutedSage,

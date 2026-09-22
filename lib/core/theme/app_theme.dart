@@ -10,7 +10,7 @@ class AppColors {
   static const Color charcoalInk = Color(0xFF111111); // Absolute Onyx
   static const Color mutedText = Color(0xFF737373);
 
-  // The Singular Brand Color: "Imyra Rose" (Vibrant, highly saturated pinkish-rose)
+  // The Singular Brand Color: "Nivora Rose" (Vibrant, highly saturated pinkish-rose)
   static const Color brandAction = Color(0xFFF43F5E); 
   static const Color brandLight = Color(0xFFFFF1F2); // 10% opacity for selected states
   static const Color brandDark = Color(0xFF4C1D95); // Deep purple for some dark mode accents if needed, but we mostly stick to Rose.

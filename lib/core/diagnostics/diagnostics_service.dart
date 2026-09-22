@@ -9,7 +9,7 @@ import 'error_logger.dart';
 class DiagnosticsService {
   static Future<String> compileReport(String? userFeedback, String? category, bool includeDiagnostics) async {
     final buffer = StringBuffer();
-    buffer.writeln('=== Imyra TEST FEEDBACK ===');
+    buffer.writeln('=== Nivora FEEDBACK & DIAGNOSTICS ===');
     buffer.writeln('Generated: ${DateTime.now().toIso8601String()}');
     buffer.writeln('');
     
@@ -74,16 +74,16 @@ class DiagnosticsService {
       final reportContent = await compileReport(userFeedback, category, includeDiagnostics);
       
       final directory = await getTemporaryDirectory();
-      final file = File('${directory.path}/Ila_diagnostic_report.txt');
+      final file = File('${directory.path}/nivora_diagnostic_report.txt');
       await file.writeAsString(reportContent);
 
-      final subject = '[Imyra Test Feedback] - ${category ?? 'Diagnostics'}';
+      final subject = '[Nivora Feedback] - ${category ?? 'Diagnostics'}';
       
       // ignore: deprecated_member_use
       await Share.shareXFiles(
         [XFile(file.path)],
         subject: subject,
-        text: 'Attached is the Imyra test diagnostic report.',
+        text: 'Attached is the Nivora diagnostic report.',
       );
     } catch (e) {
       ErrorLogger.error('Failed to export diagnostics package', e);

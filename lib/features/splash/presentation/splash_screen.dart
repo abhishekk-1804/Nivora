@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../core/widgets/imyra_logo.dart';
+import '../../../core/widgets/nivora_logo.dart';
 import '../../../main.dart';
 import '../../onboarding/presentation/onboarding_screen.dart';
 
@@ -40,7 +40,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     if (!mounted) return;
 
-    // Signal that splash screen is done so ImyraApp can trigger App Lock
+    // Signal that splash screen is done so NivoraApp can trigger App Lock
     ref.read(splashScreenDoneProvider.notifier).setDone();
 
     Navigator.of(context).pushReplacement(
@@ -70,17 +70,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         resizeToAvoidBottomInset: false,
         body: Stack(
           children: [
-            // ── Imyra geometric logo (Static to perfectly match Native OS Splash) ──
+            // ── Nivora geometric logo (Static to perfectly match Native OS Splash) ──
             const Center(
-              child: ImyraLogo(size: 72),
+              child: NivoraLogo(size: 72),
             ),
 
-            // ── "Imyra" wordmark in elegant italic serif ─────────────────────
+            // ── "Nivora" wordmark in elegant italic serif ─────────────────────
             Center(
               child: Padding(
                 padding: const EdgeInsets.only(top: 110), // Offset from center
                 child: const Text(
-                  'imyra health',
+                  'nivora health',
                   style: TextStyle(
                     fontFamily: 'FleurDeLeah',
                     fontSize: 56,

@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:imyra_app/core/services/backup_service.dart';
-import 'package:imyra_app/core/database/app_database.dart';
+import 'package:nivora_app/core/services/backup_service.dart';
+import 'package:nivora_app/core/database/app_database.dart';
 import 'package:drift/native.dart';
 
 base class MockPlatformFile extends PlatformFile {
@@ -56,10 +56,22 @@ void main() {
       );
     });
 
-    test('restoreEncryptedBackup throws FormatException when file.path is null', () async {
+    test('restoreEncryptedBackup throws FormatException when file.path is null for .imyrabackup', () async {
       final file = MockPlatformFile(
         name: 'my_backup.imyrabackup',
         path: null, // picked from Google Drive / Cloud storage directly
+      );
+
+      expect(
+        () => BackupService.restoreEncryptedBackup(db, file, 'passphrase123'),
+        throwsA(isA<FormatException>().having((e) => e.message, 'message', contains('Could not read the selected file'))),
+      );
+    });
+
+    test('restoreEncryptedBackup throws FormatException when file.path is null for .nivorabackup', () async {
+      final file = MockPlatformFile(
+        name: 'my_backup.nivorabackup',
+        path: null,
       );
 
       expect(

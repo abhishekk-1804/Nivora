@@ -1,5 +1,5 @@
-name: imyra_app
-description: "A new Flutter project."
+name: nivora_app
+description: "Nivora — A private, local-first hormonal and metabolic health companion."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -84,16 +84,16 @@ dev_dependencies:
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/branding/imyra_icon.png"
+  image_path: "assets/branding/nivora_icon.png"
   adaptive_icon_background: "#FBF9F5"
-  adaptive_icon_foreground: "assets/branding/imyra_icon_foreground.png"
+  adaptive_icon_foreground: "assets/branding/nivora_icon_foreground.png"
 
 flutter_native_splash:
   color: "#FBF9F5"
-  image: "assets/branding/imyra_splash.png"
+  image: "assets/branding/nivora_splash.png"
   android_12:
     color: "#FBF9F5"
-    image: "assets/branding/imyra_splash.png"
+    image: "assets/branding/nivora_splash.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

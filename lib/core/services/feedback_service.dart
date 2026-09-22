@@ -50,9 +50,9 @@ Device Timezone: $timezone
 
     final Uri emailUri = Uri(
       scheme: 'mailto',
-      path: 'susmitadeybusiness@gmail.com',
+      path: 'support@nivora.health',
       queryParameters: {
-        'subject': '[Imyra Feedback] $category - v$appVersion',
+        'subject': '[Nivora Feedback] $category - v$appVersion',
         'body': body,
       },
     );

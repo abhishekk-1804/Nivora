@@ -2,8 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/services.dart';
 import 'package:drift/native.dart';
 import 'package:drift/drift.dart' as drift;
-import 'package:imyra_app/core/database/app_database.dart';
-import 'package:imyra_app/core/diagnostics/error_logger.dart';
+import 'package:nivora_app/core/database/app_database.dart';
+import 'package:nivora_app/core/diagnostics/error_logger.dart';
 
 void main() {
   test('5-Year Payload Stress Test generates report efficiently', () async {

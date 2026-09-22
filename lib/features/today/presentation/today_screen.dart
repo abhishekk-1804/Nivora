@@ -16,7 +16,7 @@ import 'widgets/metabolic_log_sheet.dart';
 import 'widgets/first_use_guide_overlay.dart';
 import 'widgets/clinical_log_sheet.dart';
 import '../../../core/database/app_database.dart';
-import '../../../core/widgets/imyra_logo.dart';
+import '../../../core/widgets/nivora_logo.dart';
 import '../../../core/widgets/illustrations/illustration_caught_up.dart';
 import '../../../core/widgets/illustrations/illustration_routine.dart';
 import '../../../core/providers/preferences_provider.dart';
@@ -106,16 +106,16 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
               backgroundColor: AppColors.warmIvory,
               surfaceTintColor: Colors.transparent,
               toolbarHeight: 56,
-              leadingWidth: 140,
+              leadingWidth: 160,
               leading: Padding(
                 padding: const EdgeInsets.only(left: 16.0),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const ImyraLogo(size: 28),
+                    const NivoraLogo(size: 28),
                     const SizedBox(width: 10),
                     Text(
-                      'imyra',
+                      'nivora',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w700,
                             letterSpacing: -0.3,

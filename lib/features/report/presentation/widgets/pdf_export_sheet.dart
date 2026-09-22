@@ -242,7 +242,7 @@ class PdfSuccessSheet extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).pop();
-              Printing.layoutPdf(onLayout: (format) async => pdfBytes, name: 'Imyra_clinical_summary.pdf');
+              Printing.layoutPdf(onLayout: (format) async => pdfBytes, name: 'nivora_clinical_summary.pdf');
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.cardBg,
@@ -267,7 +267,7 @@ class PdfSuccessSheet extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).pop();
-              Printing.sharePdf(bytes: pdfBytes, filename: 'Imyra_clinical_summary.pdf');
+              Printing.sharePdf(bytes: pdfBytes, filename: 'nivora_clinical_summary.pdf');
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.brandAction,

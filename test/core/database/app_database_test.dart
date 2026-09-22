@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:drift/native.dart';
 import 'package:drift/drift.dart' as drift;
-import 'package:imyra_app/core/database/app_database.dart';
+import 'package:nivora_app/core/database/app_database.dart';
 
 void main() {
   late AppDatabase db;

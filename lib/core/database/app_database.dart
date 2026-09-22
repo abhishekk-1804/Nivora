@@ -71,8 +71,20 @@ class AppDatabase extends _$AppDatabase {
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'Ila_health.sqlite'));
-    return NativeDatabase.createInBackground(file);
+    final newDbFile = File(p.join(dbFolder.path, 'nivora_health.sqlite'));
+    final legacyDbFile = File(p.join(dbFolder.path, 'Ila_health.sqlite'));
+
+    // Safe migration from legacy database if new Nivora database doesn't exist yet
+    if (!await newDbFile.exists() && await legacyDbFile.exists()) {
+      try {
+        await legacyDbFile.copy(newDbFile.path);
+      } catch (e) {
+        // If copy fails, fallback to legacy file safely to prevent data loss
+        return NativeDatabase.createInBackground(legacyDbFile);
+      }
+    }
+
+    return NativeDatabase.createInBackground(newDbFile);
   });
 }
 

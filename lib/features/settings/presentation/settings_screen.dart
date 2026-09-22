@@ -157,13 +157,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ListTile(
                   leading: const Icon(Icons.restore, color: AppColors.brandAction),
                   title: const Text('Restore from Backup', style: TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: const Text('Import and decrypt a .imyrabackup file (replaces current local data).'),
+                  subtitle: const Text('Import and decrypt a .nivorabackup file (replaces current local data).'),
                   trailing: const Icon(Icons.upload_file_outlined, color: AppColors.mutedSage),
                   onTap: () async {
                     try {
                       final file = await FilePicker.pickFile(
                         type: FileType.custom,
-                        allowedExtensions: ['imyrabackup'],
+                        allowedExtensions: ['nivorabackup', 'imyrabackup'],
                       );
 
                       if (file != null && file.path != null) {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:imyra_app/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:nivora_app/features/onboarding/presentation/onboarding_screen.dart';
 
 void main() {
   setUp(() {
@@ -28,7 +28,7 @@ void main() {
     // Tap Next to go to Page 2 (Goals)
     await tester.tap(find.descendant(of: nextButton, matching: find.byType(ElevatedButton)));
     await tester.pumpAndSettle();
-    expect(find.textContaining('What brings you to Imyra?'), findsOneWidget);
+    expect(find.textContaining('What brings you to Nivora?'), findsOneWidget);
 
     // Tap Next to go to Page 3
     await tester.tap(find.descendant(of: nextButton, matching: find.byType(ElevatedButton)));

@@ -86,7 +86,7 @@ class NotificationService {
     }
 
     const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      'Ila_routine_channel',
+      'nivora_routine_channel',
       'Routine Reminders',
       channelDescription: 'Neutral daily reminders for your routines',
       importance: Importance.max,
@@ -107,7 +107,7 @@ class NotificationService {
       // Consumes only 1 slot and repeats forever
       await _notificationsPlugin.zonedSchedule(
         id: routineId,
-        title: 'Imyra',
+        title: 'Nivora',
         body: 'Time for your scheduled routine.',
         scheduledDate: scheduledDate,
         notificationDetails: platformDetails,
@@ -142,7 +142,7 @@ class NotificationService {
           if (scheduledDate.isAfter(tz.TZDateTime.now(tz.local))) {
             await _notificationsPlugin.zonedSchedule(
               id: routineId * 1000 + scheduledCount,
-              title: 'Imyra',
+              title: 'Nivora',
               body: 'Time for your scheduled routine.',
               scheduledDate: scheduledDate,
               notificationDetails: platformDetails,

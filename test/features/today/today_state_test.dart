@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:imyra_app/features/today/presentation/today_controller.dart';
-import 'package:imyra_app/core/database/app_database.dart';
-import 'package:imyra_app/features/routines/domain/phase_state_machine.dart';
+import 'package:nivora_app/features/today/presentation/today_controller.dart';
+import 'package:nivora_app/core/database/app_database.dart';
+import 'package:nivora_app/features/routines/domain/phase_state_machine.dart';
 
 void main() {
   group('TodayState model tests', () {

@@ -4,7 +4,7 @@ import 'package:path_provider/path_provider.dart';
 
 class ErrorLogger {
   static const int _maxLines = 500;
-  static const String _fileName = 'Ila_diagnostics.log';
+  static const String _fileName = 'nivora_diagnostics.log';
 
   static List<String> _activeRoutineNames = [];
 

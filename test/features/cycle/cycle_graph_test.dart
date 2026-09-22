@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:imyra_app/features/cycle/presentation/widgets/cycle_graph.dart';
+import 'package:nivora_app/features/cycle/presentation/widgets/cycle_graph.dart';
 
 void main() {
   testWidgets('CycleGraph renders normally for a 28-day cycle', (WidgetTester tester) async {

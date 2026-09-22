@@ -96,7 +96,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   _buildPage(
                     title: 'Your health.\nYour space.',
                     description:
-                        'Imyra stores all your records securely on this device. '
+                        'Nivora stores all your records securely on this device. '
                         'Zero cloud sync. Zero ads. Just you and your data.',
                     icon: Icons.shield_outlined,
                     actionWidget: Padding(
@@ -113,7 +113,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               try {
                                 final file = await FilePicker.pickFile(
                                   type: FileType.custom,
-                                  allowedExtensions: ['imyrabackup'],
+                                  allowedExtensions: ['nivorabackup', 'imyrabackup'],
                                 );
                                 if (file != null && file.path != null) {
                                   if (context.mounted) {
@@ -451,7 +451,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'What brings you to Imyra?',
+            'What brings you to Nivora?',
             style: TextStyle(
               fontSize: 32,
               height: 1.1,

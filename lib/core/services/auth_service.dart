@@ -18,7 +18,7 @@ class AuthService {
       // local_auth v3: authenticate() only takes localizedReason.
       // persistAcrossBackgrounding and biometricOnly were removed in v3.x.
       final success = await _auth.authenticate(
-        localizedReason: 'Unlock Imyra Health to view your private data',
+        localizedReason: 'Unlock Nivora to view your private data',
       );
       debugPrint('[AUTH] Authentication result: $success');
       return success ? AuthResult.success : AuthResult.failed;

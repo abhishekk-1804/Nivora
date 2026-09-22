@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:imyra_app/features/cycle/presentation/cycle_controller.dart';
+import 'package:nivora_app/features/cycle/presentation/cycle_controller.dart';
 
 void main() {
   group('CycleState Phase Calculation', () {

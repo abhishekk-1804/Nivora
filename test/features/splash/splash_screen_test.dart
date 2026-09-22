@@ -4,13 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:drift/native.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:imyra_app/features/splash/presentation/splash_screen.dart';
-import 'package:imyra_app/features/onboarding/presentation/onboarding_screen.dart';
-import 'package:imyra_app/main.dart';
-import 'package:imyra_app/core/providers/database_provider.dart';
-import 'package:imyra_app/core/database/app_database.dart';
-import 'package:imyra_app/core/providers/preferences_provider.dart';
-import 'package:imyra_app/l10n/app_localizations.dart';
+import 'package:nivora_app/features/splash/presentation/splash_screen.dart';
+import 'package:nivora_app/features/onboarding/presentation/onboarding_screen.dart';
+import 'package:nivora_app/main.dart';
+import 'package:nivora_app/core/providers/database_provider.dart';
+import 'package:nivora_app/core/database/app_database.dart';
+import 'package:nivora_app/core/providers/preferences_provider.dart';
+import 'package:nivora_app/l10n/app_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 // ── Shared channel mock helpers ─────────────────────────────────────────────

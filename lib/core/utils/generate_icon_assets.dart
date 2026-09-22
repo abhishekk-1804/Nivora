@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_test/flutter_test.dart';
-import 'package:imyra_app/core/diagnostics/error_logger.dart';
+import '../diagnostics/error_logger.dart';
 
 void main() {
   testWidgets('Generate assets', (tester) async {
@@ -22,7 +22,7 @@ void main() {
     // Center and scale the geometry
     canvas.translate(332, 180); 
 
-    // 1. Cycle Dot (Imyra Rose)
+    // 1. Cycle Dot (Nivora Rose)
     canvas.drawCircle(
       const Offset(180, 120), 
       120, 
@@ -47,6 +47,10 @@ void main() {
       final byteData = await img.toByteData(format: ui.ImageByteFormat.png);
       final pngBytes = byteData!.buffer.asUint8List();
 
+      await File('assets/branding/nivora_icon.png').writeAsBytes(pngBytes);
+      await File('assets/branding/nivora_splash.png').writeAsBytes(pngBytes);
+      await File('assets/branding/nivora_icon_foreground.png').writeAsBytes(pngBytes);
+      // Retain legacy paths during transition
       await File('assets/branding/imyra_icon.png').writeAsBytes(pngBytes);
       await File('assets/branding/imyra_splash.png').writeAsBytes(pngBytes);
       await File('assets/branding/imyra_icon_foreground.png').writeAsBytes(pngBytes);

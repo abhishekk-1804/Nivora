@@ -43,7 +43,7 @@ class FirstUseGuideOverlay extends StatelessWidget {
       color: Color(0xFF1565C0),
       title: 'Track your medication',
       body:
-          'Set up a routine once via the ＋ button. Every day, tap "Mark as Taken" — Imyra tracks adherence automatically.',
+          'Set up a routine once via the ＋ button. Every day, tap "Mark as Taken" — Nivora tracks adherence automatically.',
     ),
   ];
 

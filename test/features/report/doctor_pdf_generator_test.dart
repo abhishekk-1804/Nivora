@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:imyra_app/features/report/service/doctor_pdf_generator.dart';
-import 'package:imyra_app/features/report/domain/report_payload.dart';
+import 'package:nivora_app/features/report/service/doctor_pdf_generator.dart';
+import 'package:nivora_app/features/report/domain/report_payload.dart';
 
 void main() {
   group('DoctorPdfGenerator Tests', () {

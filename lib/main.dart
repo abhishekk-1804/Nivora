@@ -8,7 +8,7 @@ import 'features/splash/presentation/splash_screen.dart';
 import 'core/notifications/notification_service.dart';
 import 'core/diagnostics/error_logger.dart';
 import 'dart:ui';
-import 'core/widgets/imyra_logo.dart';
+import 'core/widgets/nivora_logo.dart';
 import 'core/services/auth_service.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -60,7 +60,7 @@ void main() async {
       overrides: [
         sharedPreferencesProvider.overrideWithValue(prefs),
       ],
-      child: const ImyraApp(),
+      child: const NivoraApp(),
     ),
   );
 }
@@ -77,14 +77,14 @@ class SplashScreenDoneNotifier extends Notifier<bool> {
 final splashScreenDoneProvider =
     NotifierProvider<SplashScreenDoneNotifier, bool>(SplashScreenDoneNotifier.new);
 
-class ImyraApp extends ConsumerStatefulWidget {
-  const ImyraApp({super.key});
+class NivoraApp extends ConsumerStatefulWidget {
+  const NivoraApp({super.key});
 
   @override
-  ConsumerState<ImyraApp> createState() => _ImyraAppState();
+  ConsumerState<NivoraApp> createState() => _NivoraAppState();
 }
 
-class _ImyraAppState extends ConsumerState<ImyraApp> with WidgetsBindingObserver {
+class _NivoraAppState extends ConsumerState<NivoraApp> with WidgetsBindingObserver {
   bool _obscureUI = false; // Default to false until we know app lock is enabled
   bool _isAuthenticating = false;
   bool _deviceSecurityMissing = false;
@@ -213,7 +213,7 @@ class _ImyraAppState extends ConsumerState<ImyraApp> with WidgetsBindingObserver
     final shouldObscure = _obscureUI && isSplashDone;
 
     return MaterialApp(
-      title: 'Imyra',
+      title: 'Nivora',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: ThemeMode.system,
@@ -240,14 +240,14 @@ class _ImyraAppState extends ConsumerState<ImyraApp> with WidgetsBindingObserver
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const ImyraLogo(size: 80),
+                        const NivoraLogo(size: 80),
                         if (!_isAuthenticating) ...[
                           const SizedBox(height: 24),
                           if (_deviceSecurityMissing)
                             const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 32),
                               child: Text(
-                                'Device Security Disabled: Please set up a phone passcode to unlock Imyra.',
+                                'Device Security Disabled: Please set up a phone passcode to unlock Nivora.',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.red,
@@ -353,3 +353,5 @@ class _MainNavigationState extends ConsumerState<MainNavigation> {
   }
 }
 
+/// Backward compatibility alias for tests
+typedef ImyraApp = NivoraApp;
