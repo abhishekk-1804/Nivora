@@ -413,7 +413,12 @@ DoctorReportData _aggregateClinicalData(Map<String, dynamic> payload) {
   }
 
   // 9. Tier 4 Rotterdam & Metabolic Engine
-  bool ovulatoryDysfunction = medianCycleLength > 35 || medianCycleLength < 21 || anovulatoryMonthsLogged > 0;
+  // Ovulatory dysfunction: cycle length > 35 days (oligomenorrhea), < 21 days (polymenorrhea),
+  // irregular cycle variation > 9 days, or recorded anovulatory cycles.
+  // Requires medianCycleLength > 0 to prevent false-positive flagging when only 0 or 1 cycle exists.
+  bool ovulatoryDysfunction = (medianCycleLength > 0 && (medianCycleLength > 35 || medianCycleLength < 21)) ||
+      (cycleLengths.length >= 2 && (cycleRangeMax - cycleRangeMin) > 9) ||
+      anovulatoryMonthsLogged > 0;
   bool hyperandrogenism = false;
   
   for (var cluster in symptomPhaseClusters) {
