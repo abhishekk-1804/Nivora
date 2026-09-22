@@ -5,9 +5,16 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'error_logger.dart';
+import '../database/app_database.dart';
 
 class DiagnosticsService {
-  static Future<String> compileReport(String? userFeedback, String? category, bool includeDiagnostics) async {
+  static Future<String> compileReport(
+    String? userFeedback,
+    String? category,
+    bool includeDiagnostics, {
+    AppDatabase? database,
+    int? schemaVersion,
+  }) async {
     final buffer = StringBuffer();
     buffer.writeln('=== Nivora FEEDBACK & DIAGNOSTICS ===');
     buffer.writeln('Generated: ${DateTime.now().toIso8601String()}');
@@ -54,10 +61,12 @@ class DiagnosticsService {
           ? logLines.sublist(logLines.length - 100).join('\n') 
           : logs;
 
+      final currentSchema = schemaVersion ?? database?.schemaVersion ?? AppDatabase().schemaVersion;
+
       buffer.writeln('--- SYSTEM INFO ---');
       buffer.writeln('App Version: ${packageInfo.version}+${packageInfo.buildNumber}');
       buffer.writeln('OS: $osInfo');
-      buffer.writeln('Schema Version: 1');
+      buffer.writeln('Schema Version: $currentSchema');
       buffer.writeln('Notifications Enabled: ${hasNotifPermission ?? 'Unknown'}');
       buffer.writeln('');
       buffer.writeln('--- RECENT SANITIZED LOGS ---');
@@ -69,9 +78,21 @@ class DiagnosticsService {
     return buffer.toString();
   }
 
-  static Future<void> exportDiagnosticsPackage({String? userFeedback, String? category, bool includeDiagnostics = true}) async {
+  static Future<void> exportDiagnosticsPackage({
+    String? userFeedback,
+    String? category,
+    bool includeDiagnostics = true,
+    AppDatabase? database,
+    int? schemaVersion,
+  }) async {
     try {
-      final reportContent = await compileReport(userFeedback, category, includeDiagnostics);
+      final reportContent = await compileReport(
+        userFeedback,
+        category,
+        includeDiagnostics,
+        database: database,
+        schemaVersion: schemaVersion,
+      );
       
       final directory = await getTemporaryDirectory();
       final file = File('${directory.path}/nivora_diagnostic_report.txt');

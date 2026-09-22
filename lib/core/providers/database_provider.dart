@@ -7,6 +7,9 @@ import '../database/daos/report_dao.dart';
 import '../database/daos/lab_result_dao.dart';
 import '../utils/date_utils.dart';
 
+import '../database/daos/clinical_profile_dao.dart';
+import '../database/daos/metabolic_log_dao.dart';
+
 part 'database_provider.g.dart';
 
 
@@ -37,9 +40,19 @@ LabResultDao labResultDao(Ref ref) {
   return ref.watch(appDatabaseProvider).labResultDao;
 }
 
+@Riverpod(keepAlive: true)
+ClinicalProfileDao clinicalProfileDao(Ref ref) {
+  return ref.watch(appDatabaseProvider).clinicalProfileDao;
+}
+
+@Riverpod(keepAlive: true)
+MetabolicLogDao metabolicLogDao(Ref ref) {
+  return ref.watch(appDatabaseProvider).metabolicLogDao;
+}
+
 // T2-1: Streams today's Symptom Log events so the energy/mood chips in the
 // greeting block can restore their selected state after any Riverpod rebuild.
-// Only events with flowType == 'Symptom Log' from today are returned.
+// Returns any event logged for today that includes recorded symptoms.
 // Written as a manual StreamProvider to avoid build_runner phase dependency issues
 // with the drift-generated CycleEvent type.
 final todaySymptomLogsProvider = StreamProvider<List<CycleEvent>>((ref) {
@@ -48,7 +61,7 @@ final todaySymptomLogsProvider = StreamProvider<List<CycleEvent>>((ref) {
   return dao.watchRecentEvents(limit: 50).map(
     (events) => events
         .where((e) =>
-            e.flowType == 'Symptom Log' &&
+            (e.symptoms != null && e.symptoms!.isNotEmpty) &&
             AppDateUtils.isSameDay(e.date, today))
         .toList(),
   );

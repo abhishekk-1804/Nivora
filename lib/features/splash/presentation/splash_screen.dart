@@ -6,10 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/preference_keys.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/nivora_logo.dart';
-import '../../../main.dart';
 import '../../onboarding/presentation/onboarding_screen.dart';
+import '../../../main.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -36,7 +37,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     _hasNavigated = true;
 
     final prefs = await SharedPreferences.getInstance();
-    final hasOnboarded = prefs.getBool('has_onboarded') ?? false;
+    final hasOnboarded = prefs.getBool(PreferenceKeys.hasOnboarded) ?? false;
 
     if (!mounted) return;
 

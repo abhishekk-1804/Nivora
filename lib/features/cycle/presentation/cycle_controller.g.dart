@@ -33,7 +33,7 @@ final class CycleControllerProvider
   CycleController create() => CycleController();
 }
 
-String _$cycleControllerHash() => r'1a40795ddde0a176d7e1e8b0a43998ea9d559e43';
+String _$cycleControllerHash() => r'52619d5f8c9884892e5ffae97e460cdd1892d4fd';
 
 abstract class _$CycleController extends $StreamNotifier<CycleState> {
   Stream<CycleState> build();

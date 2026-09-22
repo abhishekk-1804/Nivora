@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../constants/preference_keys.dart';
 import '../database/app_database.dart';
 
 class BackupService {
@@ -122,7 +123,7 @@ class BackupService {
 
     // 3. Update SharedPreferences
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('has_onboarded', true);
+    await prefs.setBool(PreferenceKeys.hasOnboarded, true);
   }
 }
 

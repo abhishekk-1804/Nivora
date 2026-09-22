@@ -75,8 +75,7 @@ class _ClinicalLogSheetState extends ConsumerState<ClinicalLogSheet>
   }
 
   Future<void> _loadExistingProfile() async {
-    final db = ref.read(appDatabaseProvider);
-    final profile = await db.clinicalProfileDao.getProfile();
+    final profile = await ref.read(clinicalProfileDaoProvider).getProfile();
     if (profile != null) {
       setState(() {
         _hasPCOM = profile.hasPCOM;
@@ -134,8 +133,7 @@ class _ClinicalLogSheetState extends ConsumerState<ClinicalLogSheet>
       return;
     }
 
-    final db = ref.read(appDatabaseProvider);
-    await db.labResultDao.insertLabResult(
+    await ref.read(labResultDaoProvider).insertLabResult(
       date: _labDate,
       testName: _selectedTest,
       value: value,
@@ -196,8 +194,7 @@ class _ClinicalLogSheetState extends ConsumerState<ClinicalLogSheet>
   }
 
   Future<void> _saveClinicalProfile() async {
-    final db = ref.read(appDatabaseProvider);
-    await db.clinicalProfileDao.saveProfile(
+    await ref.read(clinicalProfileDaoProvider).saveProfile(
       _selectedPhenotype,
       _hasPCOM,
     );

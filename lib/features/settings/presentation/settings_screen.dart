@@ -16,6 +16,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../core/utils/snackbar_utils.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import '../../../core/providers/preferences_provider.dart';
+import '../../../core/constants/preference_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -74,7 +75,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             child: Builder(
               builder: (context) {
                 final prefs = ref.watch(sharedPreferencesProvider);
-                final isLocked = prefs.getBool('app_lock_enabled') ?? false;
+                final isLocked = prefs.getBool(PreferenceKeys.appLockEnabled) ?? false;
                 return SwitchListTile(
                   title: const Text('Biometric App Lock', style: TextStyle(fontWeight: FontWeight.bold)),
                   subtitle: const Text('Require Face ID / Touch ID (Locks after 10 seconds in the background)', style: TextStyle(fontSize: 12)),
@@ -95,7 +96,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         return; // Abort turning it on
                       }
                     }
-                    await prefs.setBool('app_lock_enabled', val);
+                    await prefs.setBool(PreferenceKeys.appLockEnabled, val);
                     setState(() {});
                   },
                 );
@@ -266,7 +267,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   activeThumbColor: AppColors.brandAction,
                   onChanged: (val) async {
                     final prefs = await SharedPreferences.getInstance();
-                    await prefs.setBool('is_routine_goal', val);
+                    await prefs.setBool(PreferenceKeys.isRoutineGoal, val);
                     ref.read(isRoutineGoalProvider.notifier).state = val;
                   },
                 ),
@@ -278,7 +279,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   activeThumbColor: AppColors.brandAction,
                   onChanged: (val) async {
                     final prefs = await SharedPreferences.getInstance();
-                    await prefs.setBool('advanced_clinical_tracking', val);
+                    await prefs.setBool(PreferenceKeys.advancedClinicalTracking, val);
                     ref.read(advancedClinicalTrackingProvider.notifier).state = val;
                   },
                 ),

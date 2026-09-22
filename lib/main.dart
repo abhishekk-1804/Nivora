@@ -10,6 +10,7 @@ import 'core/diagnostics/error_logger.dart';
 import 'dart:ui';
 import 'core/widgets/nivora_logo.dart';
 import 'core/services/auth_service.dart';
+import 'core/constants/preference_keys.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -100,8 +101,8 @@ class _NivoraAppState extends ConsumerState<NivoraApp> with WidgetsBindingObserv
 
   Future<void> _loadAppLockSetting() async {
     final prefs = await SharedPreferences.getInstance();
-    final isLocked = prefs.getBool('app_lock_enabled') ?? false;
-    final hasOnboarded = prefs.getBool('has_onboarded') ?? false;
+    final isLocked = prefs.getBool(PreferenceKeys.appLockEnabled) ?? false;
+    final hasOnboarded = prefs.getBool(PreferenceKeys.hasOnboarded) ?? false;
     if (!mounted) return;
 
     // Only prompt biometrics if onboarding is complete; never lock mid-onboarding.
@@ -114,8 +115,8 @@ class _NivoraAppState extends ConsumerState<NivoraApp> with WidgetsBindingObserv
 
   Future<void> _authenticate() async {
     final prefs = ref.read(sharedPreferencesProvider);
-    final appLockEnabled = prefs.getBool('app_lock_enabled') ?? false;
-    final hasOnboarded = prefs.getBool('has_onboarded') ?? false;
+    final appLockEnabled = prefs.getBool(PreferenceKeys.appLockEnabled) ?? false;
+    final hasOnboarded = prefs.getBool(PreferenceKeys.hasOnboarded) ?? false;
 
     if (_isAuthenticating || !appLockEnabled || !hasOnboarded) return;
 
@@ -155,8 +156,8 @@ class _NivoraAppState extends ConsumerState<NivoraApp> with WidgetsBindingObserv
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     final prefs = ref.read(sharedPreferencesProvider);
-    final appLockEnabled = prefs.getBool('app_lock_enabled') ?? false;
-    final hasOnboarded = prefs.getBool('has_onboarded') ?? false;
+    final appLockEnabled = prefs.getBool(PreferenceKeys.appLockEnabled) ?? false;
+    final hasOnboarded = prefs.getBool(PreferenceKeys.hasOnboarded) ?? false;
 
     if (!appLockEnabled || !hasOnboarded) return;
 
@@ -197,8 +198,8 @@ class _NivoraAppState extends ConsumerState<NivoraApp> with WidgetsBindingObserv
   Widget build(BuildContext context) {
     ref.listen(splashScreenDoneProvider, (previous, current) {
       final prefs = ref.read(sharedPreferencesProvider);
-      final appLockEnabled = prefs.getBool('app_lock_enabled') ?? false;
-      final hasOnboarded = prefs.getBool('has_onboarded') ?? false;
+      final appLockEnabled = prefs.getBool(PreferenceKeys.appLockEnabled) ?? false;
+      final hasOnboarded = prefs.getBool(PreferenceKeys.hasOnboarded) ?? false;
       
       if (current == true && appLockEnabled && hasOnboarded) {
         // Wait for the pushReplacement animation (500ms) to finish before showing prompt.

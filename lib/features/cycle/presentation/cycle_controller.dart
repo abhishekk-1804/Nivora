@@ -216,11 +216,12 @@ class CycleController extends _$CycleController {
   /// Log a standalone symptom (like an energy check-in) without a flow event.
   /// 
   /// Stored with flowType='Symptom Log' and isTrueCycleStart=false so it
-  /// does not affect cycle length calculations.
-  Future<void> logSymptomOnly(String symptom) async {
+  /// does not affect cycle length calculations. If a flow event already exists
+  /// for this date, the symptom is merged and the flow event is preserved.
+  Future<void> logSymptomOnly(String symptom, {DateTime? date}) async {
     final dao = ref.read(cycleDaoProvider);
     await dao.logCycleEvent(
-      date: DateTime.now(),
+      date: date ?? DateTime.now(),
       flowType: 'Symptom Log',
       isTrueCycleStart: false,
       symptoms: symptom,

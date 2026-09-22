@@ -213,3 +213,87 @@ final class LabResultDaoProvider
 }
 
 String _$labResultDaoHash() => r'd29173d2ca99aacbb40a6727a32d30d1a55e775e';
+
+@ProviderFor(clinicalProfileDao)
+final clinicalProfileDaoProvider = ClinicalProfileDaoProvider._();
+
+final class ClinicalProfileDaoProvider extends $FunctionalProvider<
+    ClinicalProfileDao,
+    ClinicalProfileDao,
+    ClinicalProfileDao> with $Provider<ClinicalProfileDao> {
+  ClinicalProfileDaoProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'clinicalProfileDaoProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$clinicalProfileDaoHash();
+
+  @$internal
+  @override
+  $ProviderElement<ClinicalProfileDao> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  ClinicalProfileDao create(Ref ref) {
+    return clinicalProfileDao(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ClinicalProfileDao value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ClinicalProfileDao>(value),
+    );
+  }
+}
+
+String _$clinicalProfileDaoHash() =>
+    r'2d6d86956d2fd25cfdc326a8a24c49a8111846bf';
+
+@ProviderFor(metabolicLogDao)
+final metabolicLogDaoProvider = MetabolicLogDaoProvider._();
+
+final class MetabolicLogDaoProvider extends $FunctionalProvider<MetabolicLogDao,
+    MetabolicLogDao, MetabolicLogDao> with $Provider<MetabolicLogDao> {
+  MetabolicLogDaoProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'metabolicLogDaoProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$metabolicLogDaoHash();
+
+  @$internal
+  @override
+  $ProviderElement<MetabolicLogDao> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  MetabolicLogDao create(Ref ref) {
+    return metabolicLogDao(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MetabolicLogDao value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<MetabolicLogDao>(value),
+    );
+  }
+}
+
+String _$metabolicLogDaoHash() => r'aa3e6382f5a72cfbacef39fd44f59dd805460eb7';

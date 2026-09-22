@@ -55,8 +55,8 @@ void main() {
     _mockAllPlatformChannels();
     SharedPreferences.setMockInitialValues({});
     PackageInfo.setMockInitialValues(
-      appName: 'Imyra',
-      packageName: 'com.dexterous.imyra',
+      appName: 'Nivora',
+      packageName: 'com.nivora.health',
       version: '1.0.0',
       buildNumber: '1',
       buildSignature: 'test',
@@ -88,7 +88,7 @@ void main() {
 
       // Verify the logo exists
       expect(find.byType(SplashScreen), findsOneWidget);
-      expect(find.text('imyra health'), findsOneWidget);
+      expect(find.text('nivora health'), findsOneWidget);
 
       // Pump duration to clear pending splash hold timer
       await tester.pump(const Duration(seconds: 2));

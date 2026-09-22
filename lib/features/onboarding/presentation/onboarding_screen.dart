@@ -12,6 +12,7 @@ import '../../settings/presentation/widgets/backup_passphrase_dialog.dart';
 import '../../../core/utils/snackbar_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/database_provider.dart';
+import '../../../core/constants/preference_keys.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -61,11 +62,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _completeOnboarding() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('has_onboarded', true);
-    await prefs.setBool('is_pcos_goal', _isPcosGoal);
-    await prefs.setBool('is_routine_goal', _isRoutineGoal);
+    await prefs.setBool(PreferenceKeys.hasOnboarded, true);
+    await prefs.setBool(PreferenceKeys.isPcosGoal, _isPcosGoal);
+    await prefs.setBool(PreferenceKeys.isRoutineGoal, _isRoutineGoal);
     if (_enableAppLock) {
-      await prefs.setBool('app_lock_enabled', true);
+      await prefs.setBool(PreferenceKeys.appLockEnabled, true);
     }
     if (!mounted) return;
     Navigator.of(context).pushReplacement(

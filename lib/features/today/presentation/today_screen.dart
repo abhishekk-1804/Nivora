@@ -22,6 +22,7 @@ import '../../../core/widgets/illustrations/illustration_routine.dart';
 import '../../../core/providers/preferences_provider.dart';
 import '../../../core/providers/privacy_provider.dart';
 import '../../../core/providers/database_provider.dart';
+import '../../../core/constants/preference_keys.dart';
 
 class PrivacyBlur extends ConsumerWidget {
   final Widget child;
@@ -67,13 +68,13 @@ class _TodayScreenState extends ConsumerState<TodayScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final prefs = ref.read(sharedPreferencesProvider);
-      final alreadySeen = prefs.getBool('seen_today_guide') ?? false;
+      final alreadySeen = prefs.getBool(PreferenceKeys.seenTodayGuide) ?? false;
       if (!alreadySeen) {
         showDialog(
           context: context,
           barrierDismissible: false,
           builder: (_) => FirstUseGuideOverlay(
-            onDismiss: () => prefs.setBool('seen_today_guide', true),
+            onDismiss: () => prefs.setBool(PreferenceKeys.seenTodayGuide, true),
           ),
         );
       }

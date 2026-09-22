@@ -129,8 +129,7 @@ class _MetabolicLogSheetState extends ConsumerState<MetabolicLogSheet> {
     }
 
     final signs = _selectedSigns.isNotEmpty ? _selectedSigns.join(', ') : null;
-    final db = ref.read(appDatabaseProvider);
-    await db.metabolicLogDao.addLog(
+    await ref.read(metabolicLogDaoProvider).addLog(
       weight: _parseWeight(),
       waistCircumference: _parseCm(_waistController),
       hipCircumference: _parseCm(_hipController),
