@@ -9,7 +9,7 @@
 
 Nivora is a verified working prototype that helps a person record recurring health information in one place, review it over time, and prepare a concise summary for a healthcare conversation. The current application is a Flutter mobile app backed by a local Drift and SQLite database. It is designed to work without a cloud account or a production network service.
 
-**Contents:** [Why Nivora](#why-nivora-exists) | [Features](#what-nivora-does) | [Product flow](#product-flow) | [Screenshots](#screenshots) | [Architecture](#architecture) | [Privacy](#privacy-and-security) | [Setup](#getting-started) | [Roadmap](#roadmap)
+**Contents:** [Why Nivora](#why-nivora-exists) | [Capabilities](#core-capabilities) | [Product flow](#product-flow) | [Walkthrough](#product-walkthrough) | [Architecture](#architecture) | [Privacy](#privacy-and-security) | [Setup](#getting-started) | [Roadmap](#roadmap)
 
 ## Product overview
 
@@ -54,7 +54,7 @@ Nivora is primarily intended for people who want to:
 
 The repository is also relevant to developers studying local-first mobile applications, privacy-sensitive UX, relational domain modeling, and offline document generation.
 
-## What Nivora does
+## Core capabilities
 
 The table distinguishes implemented behavior from visible UI surfaces and future work. A screen or label alone is not treated as proof of a backend guarantee.
 
@@ -81,29 +81,33 @@ The table distinguishes implemented behavior from visible UI surfaces and future
 5. **Export:** the user can create a local PDF summary or an encrypted backup for a destination they choose.
 6. **Protection:** biometric authentication and the lifecycle privacy overlay reduce casual access and shoulder-surfing risk.
 
-## Screenshots
+## Product walkthrough
 
-The expected screenshot pack is not present in the current repository checkout. The repository therefore does not claim that screenshots prove any feature. Add captured images under [`assets/screenshots/`](assets/screenshots/) when they are available.
+The expected screenshot pack is not present in the current repository checkout. The repository therefore does not claim that screenshots prove any feature. Add captured images under [`assets/screenshots/`](assets/screenshots/) when they are available. Each image should be captured from the working application with synthetic data and should be treated as UI evidence only.
 
 ### 01. Onboarding
 
-Planned evidence slot for the first-run setup, preference selection, and notification permission flow.
+Evidence slot for the first-run setup, preference selection, and notification permission flow.
 
 ### 02. First run
 
-Planned evidence slot for the initial guidance and main navigation surface.
+Evidence slot for the initial guidance and main navigation surface.
 
 ### 03. Tracking
 
-Planned evidence slot for cycle logging, symptom entry, daily check-ins, and routines.
+Evidence slot for cycle logging, symptom entry, daily check-ins, and routines.
 
 ### 04. Insights
 
-Planned evidence slot for history, report summaries, charts, and local PDF export entry points.
+Evidence slot for history, report summaries, charts, and local PDF export entry points.
 
 ### 05. Privacy and security
 
-Planned evidence slot for biometric access, privacy controls, backup and restore, and data-management actions.
+Evidence slot for biometric access, privacy controls, backup and restore, and data-management actions.
+
+### At a glance
+
+The overview collage should be added as `assets/screenshots/Nivora_Screenshot_Overview.png` when the prepared screenshot pack is available. It should serve as the visual anchor for the product flow rather than duplicate every individual screen.
 
 ## How it works
 
@@ -116,6 +120,12 @@ Nivora follows a local application loop:
 5. Report services calculate summaries from the local history.
 6. PDF and backup services serialize selected local data without a cloud dependency.
 7. Platform plugins provide biometrics, notifications, file picking, sharing, and printing.
+
+## Local-first design
+
+Nivora keeps its primary record on the device and does not require an account or a cloud backend for its core tracking flow. This supports local access, keeps report generation close to the stored data, and leaves backup and export decisions with the user.
+
+Local-first architecture, offline capability, and security are related but different properties. The application can perform its reviewed data and report workflows locally, but platform permissions, device behavior, and the standard SQLite storage model still define important limits.
 
 ## Architecture
 
@@ -223,7 +233,7 @@ Nivora handles sensitive health information, so security claims in this reposito
 
 See [`SECURITY.md`](SECURITY.md) for reporting guidance and scope.
 
-## Health and medical disclaimer
+## Responsible use
 
 Nivora is a tracking and information-management application. Its logs, calculations, and report-style summaries are not medical diagnoses and are not a substitute for professional care. Users should discuss concerning symptoms, medication decisions, and health results with a qualified healthcare professional.
 
@@ -318,15 +328,21 @@ Nivora/
 └── pubspec.yaml
 ```
 
-## Engineering notes
+## Engineering trade-offs
 
-### Local relational storage
+### Local storage versus synchronization
 
 A typed Drift schema gives the application explicit migrations and DAO boundaries while keeping the primary record on the device. The trade-off is that the app must own migration compatibility and does not receive cloud synchronization automatically.
+
+### SQLite versus an encrypted database
+
+Standard SQLite keeps the current architecture straightforward and portable, but it does not provide database-level encryption such as SQLCipher. At-rest protection therefore depends on the operating system sandbox and device-level storage protection.
 
 ### Versioned encrypted backups
 
 Backup export uses a versioned envelope so the format can evolve without silently misreading older files. The current V2 format adds authenticated encryption. Restore replaces the current tables only after decryption and payload validation succeed.
+
+User-controlled encrypted export improves portability, but backup security also depends on passphrase quality and safe file handling. Legacy V1 files remain importable for compatibility, while new exports use V2.
 
 ### Same-day event merging
 
@@ -378,11 +394,16 @@ Nivora is licensed under the Business Source License 1.1. See [`LICENSE`](LICENS
 
 The documentation structure was informed by public README guidance and privacy-first cycle-tracking projects. These are design references, not evidence for Nivora's implementation claims.
 
+- [How to write a good README][1]
+- [Drip open-source cycle tracking app][2]
+- [Ephira local-first period tracker][3]
+- [Flutter documentation][4]
+- [Drift documentation][5]
+- [Riverpod documentation][6]
+
 [1]: https://github.com/banesullivan/README "How to write a good README"
 [2]: https://github.com/jfr3000/drip "Drip open-source cycle tracking app"
 [3]: https://github.com/adulbrich/ephira "Ephira local-first period tracker"
 [4]: https://flutter.dev/ "Flutter documentation"
 [5]: https://drift.simonbinder.eu/ "Drift documentation"
 [6]: https://riverpod.dev/ "Riverpod documentation"
-
-[1] [2] [3] [4] [5] [6]
