@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/services/quote_service.dart';
 import 'today_controller.dart';
@@ -1120,12 +1119,13 @@ class _GreetingBlockState extends ConsumerState<_GreetingBlock> {
             children: [
               Text(
                 '“', 
-                style: GoogleFonts.alice(
+                style: TextStyle(
+                  fontFamily: 'serif',
                   fontSize: 28, 
                   color: AppColors.brandAction, 
                   height: 1.0, 
-                  fontWeight: FontWeight.bold
-                )
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -1134,8 +1134,9 @@ class _GreetingBlockState extends ConsumerState<_GreetingBlock> {
                     padding: const EdgeInsets.only(top: 4.0),
                     child: Text(
                       '${service.getTodaysQuote()}”',
-                      style: GoogleFonts.playfairDisplay(
-                        color: const Color.fromARGB(192, 127, 3, 3),
+                      style: const TextStyle(
+                        fontFamily: 'serif',
+                        color: Color.fromARGB(192, 127, 3, 3),
                         fontSize: 14,
                         fontStyle: FontStyle.italic,
                         height: 1.5,
@@ -1143,15 +1144,15 @@ class _GreetingBlockState extends ConsumerState<_GreetingBlock> {
                       ),
                     ),
                   ),
-                  loading: () => Padding(
-                    padding: const EdgeInsets.only(top: 4.0),
-                    child: Text('...”', style: GoogleFonts.playfairDisplay(color: AppColors.mutedSage, fontStyle: FontStyle.italic)),
+                  loading: () => const Padding(
+                    padding: EdgeInsets.only(top: 4.0),
+                    child: Text('...”', style: TextStyle(fontFamily: 'serif', color: AppColors.mutedSage, fontStyle: FontStyle.italic)),
                   ),
-                  error: (_, __) => Padding(
-                    padding: const EdgeInsets.only(top: 4.0),
+                  error: (_, __) => const Padding(
+                    padding: EdgeInsets.only(top: 4.0),
                     child: Text(
                       'Have a wonderful day.', 
-                      style: GoogleFonts.playfairDisplay(color: AppColors.charcoalInk, fontStyle: FontStyle.italic, fontSize: 14)
+                      style: TextStyle(fontFamily: 'serif', color: AppColors.charcoalInk, fontStyle: FontStyle.italic, fontSize: 14),
                     ),
                   ),
                 ),

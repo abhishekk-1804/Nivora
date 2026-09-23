@@ -259,6 +259,18 @@ class DoctorPdfGenerator {
                 ),
               ),
             ],
+            pw.SizedBox(height: 14),
+            pw.Container(
+              padding: const pw.EdgeInsets.all(8),
+              decoration: const pw.BoxDecoration(
+                color: PdfColors.grey100,
+                borderRadius: pw.BorderRadius.all(pw.Radius.circular(4)),
+              ),
+              child: pw.Text(
+                'CLINICAL ADVISORY: This summary compiles self-reported observational data and calculated statistical metrics for healthcare provider consultation. It does not constitute an automated medical diagnosis, clinical prognosis, or prescription directive.',
+                style: const pw.TextStyle(fontSize: 6.5, color: PdfColors.grey700),
+              ),
+            ),
           ];
         },
       ),

@@ -13,6 +13,7 @@ import 'core/services/auth_service.dart';
 import 'core/constants/preference_keys.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_fonts/google_fonts.dart';
 // import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'l10n/app_localizations.dart';
 import 'core/providers/preferences_provider.dart';
@@ -21,6 +22,9 @@ import 'core/providers/database_provider.dart';
 void main() async {
   // We are removing FlutterNativeSplash.preserve() to fix the deadlock with biometric prompt.
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Enforce zero network font fetching at runtime
+  GoogleFonts.config.allowRuntimeFetching = false;
 
   // 1. Flutter Framework Errors (Render/Widget build errors)
   FlutterError.onError = (FlutterErrorDetails details) {
