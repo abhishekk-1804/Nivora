@@ -11,7 +11,8 @@ import '../constants/preference_keys.dart';
 import '../database/app_database.dart';
 
 class BackupService {
-  static Future<void> exportEncryptedBackup(AppDatabase db, String passphrase) async {
+  /// Generates the serialized and encrypted backup payload string for all persisted database tables.
+  static Future<String> generateEncryptedPayload(AppDatabase db, String passphrase) async {
     // 1. Query all tables (Runs asynchronously via Drift)
     final cycleEvents = await db.select(db.cycleEvents).get();
     final routines = await db.select(db.routines).get();
@@ -33,10 +34,14 @@ class BackupService {
     };
 
     // 2. Offload heavy serialization and encryption to a background Isolate
-    final finalPayload = await compute(performHeavyEncryption, {
+    return compute(performHeavyEncryption, {
       'data': dataMaps,
       'passphrase': passphrase,
     });
+  }
+
+  static Future<void> exportEncryptedBackup(AppDatabase db, String passphrase) async {
+    final finalPayload = await generateEncryptedPayload(db, passphrase);
 
     // 3. Write to temporary file with timestamp so repeated exports don't overwrite each other
     final tempDir = await getTemporaryDirectory();
