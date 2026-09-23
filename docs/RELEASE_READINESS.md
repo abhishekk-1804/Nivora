@@ -5,7 +5,7 @@
 **iOS Bundle Identifier:** `com.nivora.health.NivoraApp`  
 **Repository:** `D:\imyra_health`  
 **Git Remote:** `https://github.com/abhishekk-1804/Nivora.git`  
-**Head Commit:** `50b7fa3`  
+**Head Commit:** `dce6e70`  
 **Baseline Tag:** `nivora-baseline` (`8e1a716`)  
 **Certification Date:** 2026-09-23  
 
@@ -258,6 +258,9 @@ flutter build appbundle --release
 ## 16. Git Commit References
 
 ```
+dce6e70 fix(repo): restore clean UTF-8 formatting and keystore ignores in .gitignore
+6619558 docs: add final release audit, device validation protocol, and store release checklist
+d9ee6d3 docs: add RELEASE_READINESS.md certification report and update README badges
 50b7fa3 feat(release): enforce zero-network font fetching, add clinical advisory to PDF, and add notification scheduling tests
 e4eeff7 fix(android): remove unnecessary SCHEDULE_EXACT_ALARM permission for inexact alarms
 abe9ab7 docs: clarify database at-rest sandbox posture and document AES-256-GCM backup encryption
