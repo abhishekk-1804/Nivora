@@ -1,26 +1,26 @@
 # Clinical & Privacy Specification (Store Guide)
 
-Because Imyra is a strict local-first application designed for clinical compliance and absolute privacy, answering App Store and Google Play privacy questionnaires is incredibly straightforward. Furthermore, Imyra distinguishes itself from standard period trackers by employing clinical phase clustering based on established diagnostic criteria.
+Because Nivora is a strict local-first application designed for clinical compliance and absolute privacy, answering App Store and Google Play privacy questionnaires is incredibly straightforward. Furthermore, Nivora distinguishes itself from standard period trackers by employing clinical phase clustering based on established diagnostic criteria.
 
 ## Data Flow & Privacy Model
 
 ```mermaid
 sequenceDiagram
     participant User
-    participant Imyra App
+    participant Nivora App
     participant Local DB
     participant Report Engine
     participant OS Share Sheet
     participant Doctor
     
-    User->>Imyra App: Log Health Data (Symptoms, Cycles)
-    Imyra App->>Local DB: Store in unencrypted SQLite (At-Rest)
-    Note over Imyra App: Data NEVER leaves the device automatically. Zero cloud sync.
-    User->>Imyra App: Tap "Export Encrypted Backup"
-    Imyra App->>Imyra App: PBKDF2/AES-256 Encryption
-    Imyra App->>OS Share Sheet: Export .imyrabackup
-    User->>Imyra App: Tap "Generate PDF"
-    Imyra App->>Report Engine: Isolate Computes Clinical Math
+    User->>Nivora App: Log Health Data (Symptoms, Cycles)
+    Nivora App->>Local DB: Store in unencrypted SQLite (At-Rest)
+    Note over Nivora App: Data NEVER leaves the device automatically. Zero cloud sync.
+    User->>Nivora App: Tap "Export Encrypted Backup"
+    Nivora App->>Nivora App: PBKDF2/AES-256 Encryption
+    Nivora App->>OS Share Sheet: Export .nivorabackup
+    User->>Nivora App: Tap "Generate PDF"
+    Nivora App->>Report Engine: Isolate Computes Clinical Math
     Report Engine->>OS Share Sheet: Pass PDF File securely
     OS Share Sheet->>Doctor: User Manually Emails/Messages PDF
 ```
@@ -28,11 +28,11 @@ sequenceDiagram
 ## Apple App Store: Privacy Nutrition Labels
 When submitting to App Store Connect, under **App Privacy**:
 - **Data Collection:** NO. "We do not collect data from this app."
-- **Health & Fitness:** All data remains on the device. Apple requires you to disclose if you *collect* data off-device. Since Imyra has no backend, the answer is NO.
+- **Health & Fitness:** All data remains on the device. Apple requires you to disclose if you *collect* data off-device. Since Nivora has no backend, the answer is NO.
 
 ## Clinical Math & Diagnostic Algorithms
 
-Imyra uses the `ReportDao` to categorize symptoms clinically.
+Nivora uses the `ReportDao` to categorize symptoms clinically.
 
 ### Phase Visualization Flow
 ```mermaid
@@ -60,4 +60,4 @@ According to the DSM-5 criteria for PMDD, symptoms must occur in the final week 
 2. If a symptom falls into this window with >70% frequency, it is flagged as `🩸 Menstrual Clustering`.
 
 ### The Importance of `isTrueCycleStart`
-Standard tracking apps treat pre-menstrual spotting as Day 1 of a cycle, ruining median cycle length math. Imyra allows users to log spotting without triggering a new cycle (via `isTrueCycleStart = false`), ensuring the Luteal math is anchored to the true physiological start of menstruation.
+Standard tracking apps treat pre-menstrual spotting as Day 1 of a cycle, ruining median cycle length math. Nivora allows users to log spotting without triggering a new cycle (via `isTrueCycleStart = false`), ensuring the Luteal math is anchored to the true physiological start of menstruation.

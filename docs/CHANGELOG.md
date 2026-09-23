@@ -1,8 +1,20 @@
 # Changelog
 
-All notable changes to the **Imyra Health** project will be documented in this file.
+All notable changes to the **Nivora** project are documented in this file.
 
-## [1.0.0-beta.2] - 2026-08-17
+## [Nivora 1.0.0] - 2026-09-23
+
+### Transformed & Rebranded
+- **Nivora Rebrand**: Fully rebranded application to **Nivora** (`com.nivora.health` on Android, `com.nivora.health.NivoraApp` on iOS).
+- **Safe Database Migration**: Migrated local database from `Ila_health.sqlite` to `nivora_health.sqlite` with automated file preservation.
+- **Data Integrity Fix**: Fixed menstrual symptom overwrite bug in `CycleDao`; same-day logs now merge flow and symptom attributes deterministically.
+- **Clinical Accuracy**: Corrected Rotterdam Ovulatory Dysfunction calculations to require >= 2 historical cycles and cycle variance > 9 days.
+- **Offline Unicode PDF**: Bundled TrueType typography (`Roboto-Regular.ttf`, `Roboto-Bold.ttf`) for 100% offline, air-gapped PDF generation without missing glyph warnings.
+- **Authentic In-Clinic View**: Replaced mock vector QR code with real-time bedside clinical consultation parameters.
+- **Accessibility & Contrast**: Updated typography contrast to WCAG AAA standards (`#525252` on `#FAFAFA`).
+- **Encrypted Backups**: Default backup format updated to `.nivorabackup` with backward compatibility for `.imyrabackup`.
+
+## [1.0.0-beta.2] - 2026-08-17 (Historical Imyra Beta)
 
 ### Phase: Final V2 Polish & Security
 - **Strict UI Loading Guards:** Implemented strict, non-dismissible loading overlays (`CircularProgressIndicator`) wrapped in foolproof `try/finally` execution blocks to completely prevent user interaction during heavy AES-256 cryptographic computations (Backup Export/Restore).

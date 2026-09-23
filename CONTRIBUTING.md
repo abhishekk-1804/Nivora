@@ -1,10 +1,10 @@
-# Contributing to Imyra Health
+# Contributing to Nivora Health
 
-Thank you for your interest in contributing to the Imyra Health Application! 
+Thank you for your interest in contributing to the Nivora Health Application! 
 
 ## Licensing & Business Source License 1.1
 
-Imyra Health is licensed under the **Business Source License 1.1 (BSL)**. 
+Nivora Health is licensed under the **Business Source License 1.1 (BSL)**. 
 Please read the `LICENSE` file carefully before contributing or forking this repository.
 
 ### What this means for you:
@@ -29,12 +29,12 @@ If you wish to contribute bug fixes, translations, or new features back to the m
    ```bash
    dart run build_runner build --delete-conflicting-outputs
    ```
-3. **Testing**: Before submitting a PR, ensure all 21+ unit, database, and integration tests pass:
+3. **Testing**: Before submitting a PR, ensure all unit, database, and integration tests pass:
    ```bash
    flutter test
    ```
 
 ## Architectural Guidelines
-- **No Cloud Data**: Imyra is strictly a local-first application. Do not submit PRs that add third-party analytics (e.g., Firebase Analytics, Mixpanel) or external database syncing unless explicitly built as an end-to-end encrypted backup feature managed by the user.
+- **No Cloud Data**: Nivora is strictly a local-first application. Do not submit PRs that add third-party analytics (e.g., Firebase Analytics, Mixpanel) or external database syncing unless explicitly built as an end-to-end encrypted backup feature managed by the user.
 - **State Management**: Use `flutter_riverpod`. Avoid `setState` for global logic.
 - **Clinical Accuracy**: Any changes to cycle tracking or symptom clustering must adhere to DSM-5 criteria and be verified in `test/core/database/report_dao_test.dart`.

@@ -1,6 +1,6 @@
-# Imyra Architecture
+# Nivora Architecture
 
-Imyra is built on a 100% local-first, offline architecture designed to maximize user privacy and clinical utility.
+Nivora is built on a 100% local-first, offline architecture designed to maximize user privacy and clinical utility.
 
 ## 1. System Architecture Flow
 ```mermaid
@@ -27,7 +27,7 @@ graph TD
 ```
 
 ## 2. Database Schema (Drift / SQLite)
-Imyra relies on a relational, type-safe SQLite database powered by `drift`.
+Nivora relies on a relational, type-safe SQLite database powered by `drift` at `nivora_health.sqlite`.
 
 ```mermaid
 erDiagram
@@ -91,15 +91,15 @@ erDiagram
 - **`ClinicalProfile`, `LabResults`, `MetabolicLogs`**: Phenotype-centric tables specifically designed to support long-term PCOS management and metabolic tracking.
 
 ## 3. Security, Privacy & Export
-- **App Masking**: The `ImyraApp` lifecycle observer instantly flips an obscuring boolean when the app goes into the `paused` or `inactive` state, hiding clinical data from the iOS/Android app switcher.
+- **App Masking**: The `NivoraApp` lifecycle observer instantly flips an obscuring boolean when the app goes into the `paused` or `inactive` state, hiding clinical data from the iOS/Android app switcher.
 - **Biometric Gate (`local_auth`)**: Every time the app resumes or starts, it triggers `AuthService.authenticate()`, blocking the UI until FaceID or Fingerprint is provided (gracefully failing open to PIN if biometrics fail).
-- **AES-256 Encrypted Backups (`encrypt`, `share_plus`)**: The `BackupService` utilizes `compute` Isolates to query the entire SQLite dataset, serialize it to JSON, and encrypt it. The encryption engine employs a strict **PBKDF2 key derivation** algorithm (100,000 SHA-256 iterations) with a secure random 16-byte salt to derive the 32-byte key from the user's passphrase. The data is then encrypted via AES-256 and written to a `.imyrabackup` file exported through the native OS share sheet.
+- **AES-256 Encrypted Backups (`encrypt`, `share_plus`)**: The `BackupService` utilizes `compute` Isolates to query the entire SQLite dataset, serialize it to JSON, and encrypt it. The encryption engine employs a strict **PBKDF2 key derivation** algorithm (100,000 SHA-256 iterations) with a secure random 16-byte salt to derive the 32-byte key from the user's passphrase. The data is then encrypted via AES-256 and written to a `.nivorabackup` file (with backwards compatibility for `.imyrabackup`) exported through the native OS share sheet.
 
 ## 4. State Management (Riverpod)
-- **Dependency Injection**: Riverpod provides global access to the `AppDatabase` and its associated DAOs (`CycleDao`, `RoutineDao`, `ReportDao`).
+- **Dependency Injection**: Riverpod provides global access to the `AppDatabase` and its associated DAOs (`CycleDao`, `RoutineDao`, `ReportDao`, `ClinicalProfileDao`, `MetabolicLogDao`).
 - **Reactive UI**: The UI listens to database changes via StreamProviders (e.g., watching all logs for today). When the user taps "Mark as Taken", the Controller modifies the database, and the StreamProvider automatically pushes the new state to the UI without manual `setState` calls.
 - **Business Logic Separation**: Controllers (like `TodayController` and `ReportController`) handle the heavy lifting (date math, PDF generation) and sit completely separate from the Widget tree.
 
 ## 5. UI & Polish (`flutter_animate`)
 - **Micro-Animations**: All primary components (`CycleGraph`, `QuickLogSheet`, `OnboardingScreen`) are augmented with `flutter_animate` to chain fading, sliding, and scaling animations without the boilerplate of Flutter `AnimationController`s.
-- **PCOS Guardrails**: The `CycleGraph` component dynamically measures the screen width using a `LayoutBuilder` and visually caps anomalous cycles (45-120 days) rather than overflowing, alerting the user with an `Imyra Rose` warning badge.
+- **PCOS Guardrails**: The `CycleGraph` component dynamically measures the screen width using a `LayoutBuilder` and visually caps anomalous cycles (45-120 days) rather than overflowing, alerting the user with an `Nivora Rose` warning badge.

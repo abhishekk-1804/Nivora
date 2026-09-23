@@ -11,8 +11,8 @@ void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
     PackageInfo.setMockInitialValues(
-      appName: 'Imyra',
-      packageName: 'com.dexterous.imyra',
+      appName: 'Nivora',
+      packageName: 'com.nivora.health',
       version: '1.0.0',
       buildNumber: '1',
       buildSignature: 'test',
