@@ -4,7 +4,7 @@
 [![Flutter Version](https://img.shields.io/badge/Flutter-3.x-blue.svg)](https://flutter.dev)
 [![Database](https://img.shields.io/badge/Database-Drift_SQLite-green.svg)](https://drift.simonbinder.eu/)
 [![Privacy](https://img.shields.io/badge/Privacy-100%25_Local-F43F5E.svg)](#-privacy-architecture--security-model)
-[![Tests](https://img.shields.io/badge/Tests-88%20Passed-brightgreen.svg)](#-testing--quality-assurance)
+[![Tests](https://img.shields.io/badge/Tests-111%20Passed-brightgreen.svg)](#-testing--quality-assurance)
 
 Nivora is not just another period tracker. Most commercial FemTech applications monetize through invasive data brokers, opaque cloud storage, and predictive vanity metrics. **Nivora** is engineered for **clinical utility, longitudinal compliance, and diagnostic recall relief** — purpose-built for individuals managing doctor-directed regimens, PCOS, irregular cycles, and PMDD.
 
@@ -59,7 +59,8 @@ It generates an authentic, standardized clinical report for consultation with he
 ```
 
 1. **Local Sandbox Isolation:**
-   - Android cloud backup disabled (`android:allowBackup="false"`, `android:fullBackupContent="false"` in `AndroidManifest.xml`).
+   - Standard SQLite database (`nivora_health.sqlite`) stored in app-private internal storage, secured by OS sandboxing and device hardware encryption (Android File-Based Encryption / iOS Data Protection).
+   - Android cloud backup explicitly disabled (`android:allowBackup="false"`, `android:fullBackupContent="false"` in `AndroidManifest.xml`).
    - Operating system app switcher preview masked with a secure overlay.
 2. **Deterministic Data Merging:**
    - Same-day cycle events (flow intensity, spotting, pelvic pain, clots, flooding) are merged via upsert transactions to prevent accidental data loss.
