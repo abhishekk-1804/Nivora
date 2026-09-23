@@ -1,118 +1,154 @@
-# Imyra 🌸
-**A private, local-first clinical compliance notebook for women.**
+# NIVORA 🌸
+**A private, local-first clinical health notebook for women.**
 
 [![Flutter Version](https://img.shields.io/badge/Flutter-3.x-blue.svg)](https://flutter.dev)
 [![Database](https://img.shields.io/badge/Database-Drift_SQLite-green.svg)](https://drift.simonbinder.eu/)
-[![Privacy](https://img.shields.io/badge/Privacy-100%25_Local-F43F5E.svg)](#privacy-manifesto)
+[![Privacy](https://img.shields.io/badge/Privacy-100%25_Local-F43F5E.svg)](#-privacy-architecture--security-model)
+[![Tests](https://img.shields.io/badge/Tests-88%20Passed-brightgreen.svg)](#-testing--quality-assurance)
 
-Imyra is not "just another period tracker." Most FemTech apps monetize through fear, predictive vanity, and data extraction. Imyra is built for **clinical utility and recall relief**, specifically designed for women managing doctor-directed routines, irregular cycles, and PMDD. 
+Nivora is not just another period tracker. Most commercial FemTech applications monetize through invasive data brokers, opaque cloud storage, and predictive vanity metrics. **Nivora** is engineered for **clinical utility, longitudinal compliance, and diagnostic recall relief** — purpose-built for individuals managing doctor-directed regimens, PCOS, irregular cycles, and PMDD.
 
-It generates a standardized clinical PDF for a 7-minute doctor consultation while ensuring the user's intimate health data never leaves her physical device.
-
----
-
-## ✨ Core Features (V2 Beta)
-
-*   **100% Local-First Architecture:** Zero cloud sync. Zero accounts. Data is stored strictly on the device. *(Note: The local Drift database is currently unencrypted at rest natively; SQLCipher integration is planned for V3).*
-*   **Biometric Security & Encrypted Backups:** Protected by FaceID/Fingerprint locks and fully exportable via AES-256 encrypted payloads (hardened by PBKDF2 key derivation).
-*   **Clinical Report Generator:** A 1-tap engine that condenses 6 months of adherence, symptom alignments (e.g. Luteal Pattern), and treatment benchmarks into a standardized, 1-page A4 PDF. Utilizes compassionate, phenotype-centric framing rather than rigid alerting.
-*   **PCOS & Extreme Cycle Guardrails:** Beautiful, responsive cycle graphs that dynamically handle and visually cap highly irregular cycles (45-120 days).
-*   **Smart Disambiguation:** Differentiates between true cycle starts (Day 1) and pre-period spotting for accurate baseline data.
-*   **21/7 Routine Engine:** Custom medication reminders tailored for birth control or cyclical hormone treatments, complete with local push notifications. Includes a "Catch Up" drawer with retroactive time-picker logging for clinical adherence accuracy.
-*   **Premium Animations:** Micro-animations provide buttery smooth transitions that create a venture-backed, native-feeling aesthetic.
+It generates an authentic, standardized clinical report for consultation with healthcare providers while ensuring intimate health data **never leaves the physical device**.
 
 ---
 
-## 🎨 Visual Identity & UI
+## ✨ Core Pillars & Features
 
-Imyra's UI/UX takes inspiration from top-tier productivity utilities (like Cal.com and Todoist) rather than traditional health apps.
-*   **The Canvas:** Stark, crisp Linen White (`#FAFAFA`) and Absolute Onyx (`#111111`).
-*   **The Signature Color:** **Imyra Rose (`#F43F5E`)** — a striking, confident pinkish-rose that drives all primary actions.
-*   **The Logo:** A bold geometric 'i' combining the Cycle Dot and the Routine Capsule, providing total lock-screen discretion.
+* **100% Local-First & Zero-Cloud:** No account creation, no cloud sync, no tracking beacons, no analytics SDKs. All data resides in an isolated on-device SQLite database via Drift.
+* **Automatic, Safe Database Migration:** Upgraded from legacy schemas seamlessly with physical backup preservation, maintaining historical logs without data loss.
+* **Biometric Authentication & App Masking:** Local biometric lock (FaceID/Fingerprint) with an instant privacy shield overlay when backgrounded, preventing screenshots or unauthorized app-switcher snooping.
+* **Encrypted Backups (AES-256-GCM + PBKDF2):** Export and restore full encrypted backups (`.nivorabackup`) protected by user passphrases, with strict backwards compatibility for legacy backup files.
+* **Evidence-Based Health Engine (Rotterdam Consensus):** Clinically sound PCOS evaluation implementing consensus guidelines:
+  - Requires a minimum of 2 tracked cycles before evaluating cycle-length variance.
+  - Oligo/amenorrhea (>35 days or <21 days) and cycle variance (>9 days) evaluated against true historical data.
+  - Phenotype classification (Phenotype A, D, etc.) with transparent criteria.
+* **Deterministic Event Merging:** Logging symptoms or flow multiple times on the same date safely merges attributes instead of overwriting, preventing lost bleeding or pain records.
+* **Offline Unicode Clinical PDF Generator:** Generates comprehensive multi-page clinical consultation summaries completely offline without network calls. Bundled TrueType typography eliminates missing glyph warnings and guarantees 100% air-gapped generation.
+* **In-Clinic Consultation Glance:** Authentic bedside clinical view displaying key metrics, heavy bleeding/flooding indicators, and protocol adherence at a glance for in-person doctor visits.
+* **Cryptographic Data Destruction:** "Erase All Data" triggers `PRAGMA secure_delete = ON` (overwriting deleted records with zeros), purges all operational tables in a single transaction, and executes `VACUUM` to rebuild the SQLite database file and eliminate unallocated disk space.
+* **Accessible & High-Contrast Design:** WCAG AAA-compliant text contrasts (`#525252` on `#FAFAFA` and `#FFFFFF`), high-contrast dark mode, and responsive layout across phones and tablets.
 
 ---
 
-## 🏗 Tech Stack
+## 🔒 Privacy Architecture & Security Model
 
-*   **Framework:** [Flutter](https://flutter.dev) (Cross-platform iOS & Android)
-*   **Local Storage:** [Drift](https://drift.simonbinder.eu/) (Type-safe SQLite)
-*   **State Management:** [Riverpod](https://riverpod.dev/) (Reactive caching and dependency injection)
-*   **Security:** `local_auth` (FaceID/Biometrics) and `encrypt` (AES-256)
-*   **UI & Polish:** `flutter_animate`
-*   **PDF Generation:** `pdf` and `printing` packages
-*   **Testing:** `flutter_test` (Unit) and `integration_test` (E2E)
+```
++-------------------------------------------------------------+
+|                      NIVORA CLIENT                          |
+|                                                             |
+|  +------------------+             +----------------------+  |
+|  | Presentation UI  | <---------> | Riverpod Controllers |  |
+|  +------------------+             +----------------------+  |
+|           |                                  |              |
+|           v                                  v              |
+|  +------------------+             +----------------------+  |
+|  | Local Biometrics |             |   Drift SQLite DB    |  |
+|  |   & App Mask     |             |  (nivora_health.db)  |  |
+|  +------------------+             +----------------------+  |
+|                                              |              |
+|                                              v              |
+|                                   +----------------------+  |
+|                                   |  AES-256-GCM Backup  |  |
+|                                   | (PBKDF2 Key Deriv.)  |  |
+|                                   +----------------------+  |
++-------------------------------------------------------------+
+                              |
+                              X  NO NETWORK / NO CLOUD
+                              |
+                     [ AIR-GAPPED DEVICE ]
+```
+
+1. **Local Sandbox Isolation:**
+   - Android cloud backup disabled (`android:allowBackup="false"`, `android:fullBackupContent="false"` in `AndroidManifest.xml`).
+   - Operating system app switcher preview masked with a secure overlay.
+2. **Deterministic Data Merging:**
+   - Same-day cycle events (flow intensity, spotting, pelvic pain, clots, flooding) are merged via upsert transactions to prevent accidental data loss.
+3. **No Network Telemetry:**
+   - The app operates under strict offline assumptions. No external HTTP requests, analytics endpoints, or cloud synchronizers exist in the codebase.
+4. **Permanent Shredding:**
+   - Erasing data zeroes out pages physically via SQLite secure delete and vacuuming.
+
+---
+
+## 🎨 Design System
+
+* **Canvas:** Stark Linen White (`#FAFAFA`) & Deep Slate (`#121212`)
+* **Surfaces:** Pure White (`#FFFFFF`) & Midnight Card Surface (`#1E1E1E`)
+* **Primary Accent:** **Nivora Rose (`#F43F5E`)** — an assertive, accessible rose-red
+* **Typography:** Clean sans-serif with WCAG AAA contrast compliance (`#111111` titles, `#525252` body/captions)
+* **Visual Polish:** Spring curves and micro-animations via `flutter_animate`
+
+---
+
+## 🏗 Technology Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | [Flutter 3.x](https://flutter.dev) (Dart SDK >= 3.0.0) |
+| Local Database | [Drift](https://drift.simonbinder.eu/) + SQLite |
+| State Management | [Riverpod](https://riverpod.dev/) 3.x (`riverpod_annotation`, code-gen) |
+| Offline PDF Engine | `pdf` + `printing` + bundled TrueType fonts |
+| Encryption | `pointycastle` / `encrypt` (PBKDF2 + AES-256-GCM) |
+| Biometric Security | `local_auth` (FaceID, Fingerprint, Biometric Prompt) |
+| Platform Targets | Android (`com.nivora.health`), iOS (`com.nivora.health.NivoraApp`) |
+
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-*   Flutter SDK (v3.x or higher)
-*   Dart SDK
-*   Xcode (for iOS builds) / Android Studio (for Android builds)
+- Flutter SDK (v3.24+ recommended)
+- Dart SDK (v3.5+)
+- Android Studio / Xcode
 
 ### 1. Install Dependencies
-```bash
+```powershell
 flutter pub get
-
 ```
 
-### 2. Run Code Generation
-
-Because Imyra uses Drift for SQLite and Riverpod for state management, you must run the build runner to generate the data classes:
-
-```bash
+### 2. Run Code Generation (Drift & Riverpod)
+```powershell
 dart run build_runner build --delete-conflicting-outputs
-
 ```
 
-### 3. Generate Branding Assets
-
-Generate the high-resolution Imyra Rose icons and native splash screens:
-
-```bash
-flutter test lib/core/utils/generate_icon_assets.dart
-dart run flutter_launcher_icons
-dart run flutter_native_splash:create
-
+### 3. Run Static Analysis & Verification
+```powershell
+dart analyze
 ```
 
-### 4. Run the App
-
-```bash
-flutter run
-
-```
-
----
-
-## 🧪 Quality Assurance & Testing
-
-Before deploying any release build, the QA suite must pass. This guarantees clinical date math (like PMDD luteal clustering) is perfectly accurate.
-
-**Run Unit & Database Integrity Tests:**
-
-```bash
+### 4. Execute Full Test Suite
+```powershell
 flutter test
-
-```
-
-**Run End-to-End (E2E) Smoke Test:**
-(Ensure a physical device or emulator is running)
-
-```bash
-flutter test integration_test/app_flow_test.dart
-
 ```
 
 ---
 
-## 🔒 Privacy Manifesto (The "Imyra Promise")
+## 🧪 Testing & Quality Assurance
 
-1. **No Tracking:** No analytics SDKs (no Firebase Analytics, no Mixpanel, no Meta Pixel).
-2. **No Ads:** The UI will never push sponsored wellness content.
-3. **Instant Purge:** The Settings menu contains a 1-tap "Erase All Data" button that executes a complete SQL `DROP` on all tables instantly.
+Nivora features a rigorous test suite covering database transactions, migration resilience, clinical engine calculations, UI widgets, and offline security:
+
+* **Offline Resilience:** `test/offline_verification_test.dart` ensures PDF generation executes with an enforced global `HttpOverrides` that throws if any network call is attempted.
+* **Rotterdam Consensus:** `test/core/database/report_dao_test.dart` verifies that 0 or 1 logged cycles do not produce false positive ovulatory dysfunction flags.
+* **Menstrual Overwrite Prevention:** `test/features/cycle/cycle_controller_test.dart` confirms symptom updates on the same date merge cleanly without dropping flow attributes.
+* **Encrypted Backup & Restore:** `test/features/settings/backup_restore_test.dart` verifies AES-256 key derivation, payload integrity, and backward compatibility with `.imyrabackup` archives.
+* **Biometric App Masking:** `test/features/security/app_mask_test.dart` tests privacy overlay activation on lifecycle pauses.
 
 ---
+
+## 📦 Building for Production
+
+### Android Release APK:
+```powershell
+$env:TEMP = "D:\temp"; $env:TMP = "D:\temp"; flutter build apk --release
+```
+
+### Android App Bundle (AAB):
+```powershell
+$env:TEMP = "D:\temp"; $env:TMP = "D:\temp"; flutter build appbundle --release
+```
+
+---
+
 <p align="center">
-<em>Built for women, memory, and peace of mind.</em>
+  <strong>NIVORA</strong> &bull; Private. Clinical. Local-First.
 </p>

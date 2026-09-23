@@ -6,9 +6,9 @@ class AppColors {
   static const Color cardSurface = Color(0xFFFFFFFF);
   static const Color cardBorder = Color(0xFFE5E5E5);
 
-  // High-Contrast Typography
+  // High-Contrast Typography (WCAG AAA Compliant)
   static const Color charcoalInk = Color(0xFF111111); // Absolute Onyx
-  static const Color mutedText = Color(0xFF737373);
+  static const Color mutedText = Color(0xFF525252); // WCAG AAA Compliant on warmCanvas & cardSurface
 
   // The Singular Brand Color: "Nivora Rose" (Vibrant, highly saturated pinkish-rose)
   static const Color brandAction = Color(0xFFF43F5E); 
@@ -20,7 +20,7 @@ class AppColors {
   static const Color darkCardSurface = Color(0xFF1E1E1E); // Elevated dark surface
   static const Color darkCardBorder = Color(0xFF333333); // Subtle dark border
   static const Color darkText = Color(0xFFE0E0E0); // High legibility white/gray
-  static const Color darkMutedText = Color(0xFF9E9E9E); // Dimmer gray
+  static const Color darkMutedText = Color(0xFFA3A3A3); // Crisp contrast in dark mode
 
   // Legacy aliases to prevent compile errors during transition
   static const Color warmIvory = warmCanvas;

@@ -1,23 +1,39 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../domain/report_payload.dart';
 
 class DoctorInClinicDialog extends StatelessWidget {
   final DoctorReportData data;
-  const DoctorInClinicDialog({super.key, required this.data});
+  final VoidCallback? onExportPdf;
+
+  const DoctorInClinicDialog({
+    super.key,
+    required this.data,
+    this.onExportPdf,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final hasFlooding = data.floodingEventsCount > 0;
+    final hasHeavyBleeding = data.totalHeavyWithClotsDays > 0;
+
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       child: Container(
+        constraints: const BoxConstraints(maxWidth: 480),
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: AppColors.warmIvory,
-          borderRadius: BorderRadius.circular(28),
-          border: Border.all(color: AppColors.lightBorder),
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: AppColors.cardBorder),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+            ),
+          ],
         ),
         child: SingleChildScrollView(
           child: Column(
@@ -26,72 +42,121 @@ class DoctorInClinicDialog extends StatelessWidget {
             children: [
               // Header
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Doctor Quick-Share',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.deepInk,
-                      letterSpacing: -0.5,
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: AppColors.brandLight,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.medical_information_outlined,
+                      color: AppColors.brandAction,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'In-Clinic Quick Glance',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.charcoalInk,
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          data.dateRange,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.mutedText,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close, color: AppColors.mutedSage),
+                    icon: const Icon(Icons.close, color: AppColors.mutedText, size: 20),
                     onPressed: () => Navigator.pop(context),
+                    visualDensity: VisualDensity.compact,
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
 
               // Description
-              const Text(
-                'Show this screen to your clinician for an instant overview of your reproductive & metabolic logs.',
-                style: TextStyle(color: AppColors.mutedSage, fontSize: 13, height: 1.4),
-              ),
-              const SizedBox(height: 24),
-
-              // Mock QR Code (offline secure token)
-              Center(
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.lightBorder),
-                  ),
-                  child: CustomPaint(
-                    size: const Size(160, 160),
-                    painter: _QrPainter(),
-                  ),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.cardSurface,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.cardBorder),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(Icons.info_outline, size: 16, color: AppColors.mutedText),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Present this screen directly to your clinician during consultation for quick clinical parameters.',
+                        style: TextStyle(fontSize: 12, color: AppColors.mutedText, height: 1.3),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 12),
-              const Text(
-                'Offline Clinician Token (Scan to Import)',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.mutedSage,
-                ),
-              ),
-              const SizedBox(height: 28),
+              const SizedBox(height: 16),
 
-              // Clinical summary card
+              // Overview Metrics Grid
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildMetricCard(
+                      label: 'MEDIAN CYCLE',
+                      value: data.medianCycleLength > 0 ? '${data.medianCycleLength}d' : 'N/A',
+                      subtext: data.totalCycles > 0 ? 'Range: ${data.cycleRangeMin}–${data.cycleRangeMax}d' : '0 cycles logged',
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _buildMetricCard(
+                      label: 'TOTAL CYCLES',
+                      value: '${data.totalCycles}',
+                      subtext: 'Observed window',
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _buildMetricCard(
+                      label: 'ADHERENCE',
+                      value: '${data.adherencePercentage}%',
+                      subtext: 'Protocol logs',
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Clinical summary section
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.cardBg,
+                  color: AppColors.cardSurface,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppColors.lightBorder),
+                  border: Border.all(color: AppColors.cardBorder),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'CLINICAL SUMMARY',
+                      'CLINICAL PARAMETERS',
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w800,
@@ -100,28 +165,75 @@ class DoctorInClinicDialog extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 12),
-                    _buildSummaryRow(Icons.calendar_today_outlined, 'Cycle Length (Median)', '${data.medianCycleLength} days'),
-                    _buildSummaryRow(Icons.rule, 'Rotterdam Criteria Phenotype', 
-                      data.rotterdamOvulatoryDysfunction && data.rotterdamHyperandrogenism
-                          ? 'Phenotype A (Classic)'
-                          : data.rotterdamOvulatoryDysfunction ? 'Phenotype D (Irregular Cycles)' : 'Subclinical'),
-                    _buildSummaryRow(Icons.check_circle_outline, 'Medication Adherence', '${data.adherencePercentage}%'),
-                    _buildSummaryRow(Icons.healing_outlined, 'Heavy Bleeding with Clots', '${data.totalHeavyWithClotsDays} days'),
-                    _buildSummaryRow(Icons.warning_amber_rounded, 'Flooding (Soaking <2 hr)', '${data.floodingEventsCount} events'),
+                    _buildSummaryRow(
+                      icon: Icons.rule_folder_outlined,
+                      label: 'Rotterdam Phenotype',
+                      value: _getRotterdamLabel(),
+                      isHighlight: data.rotterdamOvulatoryDysfunction,
+                    ),
+                    _buildSummaryRow(
+                      icon: Icons.opacity_outlined,
+                      label: 'Heavy Bleeding Days (Clots)',
+                      value: '${data.totalHeavyWithClotsDays} days',
+                      isAlert: hasHeavyBleeding,
+                    ),
+                    _buildSummaryRow(
+                      icon: Icons.warning_amber_rounded,
+                      label: 'Flooding Events (Soaking <2h)',
+                      value: '${data.floodingEventsCount} events',
+                      isAlert: hasFlooding,
+                    ),
+                    _buildSummaryRow(
+                      icon: Icons.colorize_outlined,
+                      label: 'Spotting Profile',
+                      value: data.spottingColorProfile,
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
 
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.deepInk,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                child: const Text('Done', style: TextStyle(fontWeight: FontWeight.bold)),
+              // Action Buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        side: const BorderSide(color: AppColors.cardBorder),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: const Text(
+                        'Close',
+                        style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.charcoalInk),
+                      ),
+                    ),
+                  ),
+                  if (onExportPdf != null) ...[
+                    const SizedBox(width: 10),
+                    Expanded(
+                      flex: 2,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          onExportPdf!();
+                        },
+                        icon: const Icon(Icons.picture_as_pdf_outlined, size: 18),
+                        label: const Text(
+                          'Export Full PDF',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.brandAction,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ],
           ),
@@ -130,97 +242,109 @@ class DoctorInClinicDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryRow(IconData icon, String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
-      child: Row(
+  String _getRotterdamLabel() {
+    if (data.rotterdamOvulatoryDysfunction && data.rotterdamHyperandrogenism) {
+      return 'Phenotype A (Classic)';
+    } else if (data.rotterdamOvulatoryDysfunction) {
+      return 'Phenotype D (Irregular Cycles)';
+    } else if (data.rotterdamHyperandrogenism) {
+      return 'Hyperandrogenic Only';
+    }
+    return 'Subclinical / Normal';
+  }
+
+  Widget _buildMetricCard({
+    required String label,
+    required String value,
+    required String subtext,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.cardSurface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.cardBorder),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 16, color: AppColors.mutedSage),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              label,
-              style: const TextStyle(fontSize: 13, color: AppColors.deepInk, fontWeight: FontWeight.w500),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 9,
+              fontWeight: FontWeight.w700,
+              color: AppColors.mutedText,
+              letterSpacing: 0.3,
             ),
           ),
+          const SizedBox(height: 4),
           Text(
             value,
-            style: const TextStyle(fontSize: 13, color: AppColors.deepInk, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+              color: AppColors.charcoalInk,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            subtext,
+            style: const TextStyle(
+              fontSize: 10,
+              color: AppColors.mutedText,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
     );
   }
-}
 
-/// Custom painter to generate a beautiful, authentic vector QR code pattern
-class _QrPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = AppColors.deepInk
-      ..style = PaintingStyle.fill;
-
-    // Background is white, draw black module squares
-    final double moduleSize = size.width / 21; // 21x21 grid (QR version 1)
-    
-    // Helper to draw a square block
-    void drawBlock(int x, int y, int sizeX, int sizeY) {
-      canvas.drawRect(
-        Rect.fromLTWH(x * moduleSize, y * moduleSize, sizeX * moduleSize, sizeY * moduleSize),
-        paint,
-      );
+  Widget _buildSummaryRow({
+    required IconData icon,
+    required String label,
+    required String value,
+    bool isAlert = false,
+    bool isHighlight = false,
+  }) {
+    Color textColor = AppColors.charcoalInk;
+    if (isAlert) {
+      textColor = AppColors.alertRed;
+    } else if (isHighlight) {
+      textColor = AppColors.brandAction;
     }
 
-    // Finder patterns (top-left, top-right, bottom-left)
-    void drawFinder(int ox, int oy) {
-      drawBlock(ox, oy, 7, 7);
-      
-      final whitePaint = Paint()
-        ..color = Colors.white
-        ..style = PaintingStyle.fill;
-      canvas.drawRect(
-        Rect.fromLTWH((ox + 1) * moduleSize, (oy + 1) * moduleSize, 5 * moduleSize, 5 * moduleSize),
-        whitePaint,
-      );
-      
-      drawBlock(ox + 2, oy + 2, 3, 3);
-    }
-
-    drawFinder(0, 0); // Top-left
-    drawFinder(14, 0); // Top-right
-    drawFinder(0, 14); // Bottom-left
-
-    // Draw alignment module
-    drawBlock(14, 14, 2, 2);
-
-    // Draw timing patterns
-    for (int i = 8; i < 13; i++) {
-      if (i % 2 == 0) {
-        drawBlock(6, i, 1, 1);
-        drawBlock(i, 6, 1, 1);
-      }
-    }
-
-    // Draw pseudo-random data modules
-    final rand = math.Random(1337);
-    for (int y = 0; y < 21; y++) {
-      for (int x = 0; x < 21; x++) {
-        // Skip finder areas
-        if ((x < 8 && y < 8) || (x > 12 && y < 8) || (x < 8 && y > 12)) {
-          continue;
-        }
-        // Skip timing pattern
-        if (x == 6 || y == 6) {
-          continue;
-        }
-        if (rand.nextBool()) {
-          drawBlock(x, y, 1, 1);
-        }
-      }
-    }
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            size: 16,
+            color: isAlert ? AppColors.alertRed : AppColors.mutedText,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 13,
+                color: AppColors.charcoalInk,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 13,
+              color: textColor,
+              fontWeight: (isAlert || isHighlight) ? FontWeight.w700 : FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
   }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

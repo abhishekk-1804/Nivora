@@ -7,7 +7,14 @@ import '../domain/report_payload.dart';
 class PdfExportArgs {
   final DoctorReportData data;
   final PdfExportOptions options;
-  const PdfExportArgs(this.data, this.options);
+  final Uint8List? regularFontBytes;
+  final Uint8List? boldFontBytes;
+  const PdfExportArgs(
+    this.data,
+    this.options, {
+    this.regularFontBytes,
+    this.boldFontBytes,
+  });
 }
 
 class DoctorPdfGenerator {
@@ -15,7 +22,22 @@ class DoctorPdfGenerator {
   static Future<Uint8List> generatePdfBytes(PdfExportArgs args) async {
     final data = args.data;
     final options = args.options;
-    final doc = pw.Document();
+
+    pw.ThemeData theme;
+    if (args.regularFontBytes != null && args.boldFontBytes != null) {
+      theme = pw.ThemeData.withFont(
+        base: pw.Font.ttf(args.regularFontBytes!.buffer.asByteData()),
+        bold: pw.Font.ttf(args.boldFontBytes!.buffer.asByteData()),
+      );
+    } else if (args.regularFontBytes != null) {
+      theme = pw.ThemeData.withFont(
+        base: pw.Font.ttf(args.regularFontBytes!.buffer.asByteData()),
+      );
+    } else {
+      theme = pw.ThemeData.base();
+    }
+
+    final doc = pw.Document(theme: theme);
 
     doc.addPage(
       pw.MultiPage(

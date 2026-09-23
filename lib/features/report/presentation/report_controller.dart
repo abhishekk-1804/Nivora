@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/providers/database_provider.dart';
 import '../domain/report_payload.dart';
@@ -61,8 +62,24 @@ class ReportController extends _$ReportController {
     state = ReportState(isGenerating: true, previewData: data);
     
     try {
+      Uint8List? regularFontBytes;
+      Uint8List? boldFontBytes;
+      try {
+        final regByteData = await rootBundle.load('assets/fonts/Roboto-Regular.ttf');
+        regularFontBytes = regByteData.buffer.asUint8List(regByteData.offsetInBytes, regByteData.lengthInBytes);
+        final boldByteData = await rootBundle.load('assets/fonts/Roboto-Bold.ttf');
+        boldFontBytes = boldByteData.buffer.asUint8List(boldByteData.offsetInBytes, boldByteData.lengthInBytes);
+      } catch (_) {
+        // Fallback gracefully if bundle load is unavailable (e.g. in certain test environments)
+      }
+
       // Offload PDF generation to a background isolate to prevent UI freezing
-      final args = PdfExportArgs(data, options);
+      final args = PdfExportArgs(
+        data,
+        options,
+        regularFontBytes: regularFontBytes,
+        boldFontBytes: boldFontBytes,
+      );
       return await compute(DoctorPdfGenerator.generatePdfBytes, args);
     } finally {
       state = ReportState(isGenerating: false, previewData: data);

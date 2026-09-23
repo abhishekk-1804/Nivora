@@ -37,7 +37,15 @@ void main() {
         treatmentBenchmark: null,
       );
       try {
-        final args = PdfExportArgs(payload, const PdfExportOptions());
+        final regularFontBytes = File('assets/fonts/Roboto-Regular.ttf').readAsBytesSync();
+        final boldFontBytes = File('assets/fonts/Roboto-Bold.ttf').readAsBytesSync();
+
+        final args = PdfExportArgs(
+          payload,
+          const PdfExportOptions(),
+          regularFontBytes: regularFontBytes,
+          boldFontBytes: boldFontBytes,
+        );
         final pdfBytes = await DoctorPdfGenerator.generatePdfBytes(args);
         
         expect(pdfBytes, isNotNull);
@@ -46,10 +54,6 @@ void main() {
         if (e.toString().contains('NETWORK CALL ATTEMPTED')) {
           fail('Offline Resilience Failed: A package attempted to make a network call during PDF generation.');
         } else {
-          // Re-throw other unexpected errors (like missing fonts in test environment)
-          // Wait, printing package might attempt to download fonts if not cached?
-          // Actually, DoctorPdfGenerator uses GoogleFonts? Let's hope it uses bundled fonts or standard pw.Font.
-          // To make the test resilient, we just verify the network wasn't hit.
           rethrow;
         }
       }

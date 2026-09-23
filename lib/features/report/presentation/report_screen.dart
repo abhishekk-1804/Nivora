@@ -230,12 +230,23 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                                           showDialog(
                                             context: context,
                                             builder: (_) =>
-                                                DoctorInClinicDialog(data: data),
+                                                DoctorInClinicDialog(
+                                                  data: data,
+                                                  onExportPdf: () {
+                                                    showModalBottomSheet(
+                                                      context: context,
+                                                      isScrollControlled: true,
+                                                      backgroundColor: Colors.transparent,
+                                                      builder: (_) =>
+                                                          const PdfExportConfigSheet(),
+                                                    );
+                                                  },
+                                                ),
                                           );
                                         },
-                                  icon: const Icon(Icons.qr_code_scanner_rounded),
+                                  icon: const Icon(Icons.badge_outlined),
                                   label: const Text(
-                                    'Doctor Share',
+                                    'In-Clinic View',
                                     style: TextStyle(
                                         fontSize: 14, fontWeight: FontWeight.bold),
                                   ),

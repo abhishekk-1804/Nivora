@@ -1,12 +1,13 @@
+import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nivora_app/features/report/service/doctor_pdf_generator.dart';
 import 'package:nivora_app/features/report/domain/report_payload.dart';
 
 void main() {
   group('DoctorPdfGenerator Tests', () {
-    test('PDF Generator executes without errors with fully populated phenotype data', () async {
+    test('PDF Generator executes without errors with fully populated phenotype data and bundled fonts', () async {
       final payload = DoctorReportData(
-        dateRange: 'Jan 2026 - Jun 2026',
+        dateRange: 'Jan 2026 – Jun 2026',
         totalCycles: 5,
         cycleLengthsForChart: [28, 45, 38, 30, 40],
         cycleRangeMin: 28,
@@ -27,7 +28,15 @@ void main() {
         rotterdamHyperandrogenism: true,
         rotterdamPCOM: true,
       );
-      final args = PdfExportArgs(payload, const PdfExportOptions());
+      final regularFontBytes = File('assets/fonts/Roboto-Regular.ttf').readAsBytesSync();
+      final boldFontBytes = File('assets/fonts/Roboto-Bold.ttf').readAsBytesSync();
+
+      final args = PdfExportArgs(
+        payload,
+        const PdfExportOptions(),
+        regularFontBytes: regularFontBytes,
+        boldFontBytes: boldFontBytes,
+      );
       final pdfBytes = await DoctorPdfGenerator.generatePdfBytes(args);
       
       expect(pdfBytes, isNotNull);

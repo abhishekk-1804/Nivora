@@ -37,10 +37,10 @@ void main() {
     await tester.tap(find.byIcon(Icons.analytics_outlined));
     await tester.pumpAndSettle();
 
-    // Tap Generate Report
-    expect(find.text('Generate Doctor\'s Report (PDF)'), findsOneWidget);
-    await tester.tap(find.text('Generate Doctor\'s Report (PDF)'));
-    await tester.pumpAndSettle(); // This will trigger compute() and open share sheet natively
+    // Tap Export PDF
+    expect(find.text('Export PDF'), findsOneWidget);
+    await tester.tap(find.text('Export PDF'));
+    await tester.pumpAndSettle();
 
     // 5. Data Deletion
     await tester.tap(find.byIcon(Icons.settings_outlined));

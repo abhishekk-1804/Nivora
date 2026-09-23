@@ -143,3 +143,8 @@ flutter:
     - family: FleurDeLeah
       fonts:
         - asset: assets/fonts/FleurDeLeah-Regular.ttf
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto-Bold.ttf
+          weight: 700
