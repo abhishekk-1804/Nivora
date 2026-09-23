@@ -66,11 +66,11 @@ class AppDatabase extends _$AppDatabase {
           }
         },
       );
-}
 
-LazyDatabase _openConnection() {
-  return LazyDatabase(() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
+  /// Resolves the database file location, safely migrating legacy database files
+  /// (`Ila_health.sqlite`) to `nivora_health.sqlite` if a legacy file exists and
+  /// the new file does not yet exist.
+  static Future<File> resolveDatabaseFile({required Directory dbFolder}) async {
     final newDbFile = File(p.join(dbFolder.path, 'nivora_health.sqlite'));
     final legacyDbFile = File(p.join(dbFolder.path, 'Ila_health.sqlite'));
 
@@ -78,13 +78,26 @@ LazyDatabase _openConnection() {
     if (!await newDbFile.exists() && await legacyDbFile.exists()) {
       try {
         await legacyDbFile.copy(newDbFile.path);
+        // Also preserve a safety copy of the legacy file
+        final backupCopy = File(p.join(dbFolder.path, 'Ila_health.sqlite.legacy_backup'));
+        if (!await backupCopy.exists()) {
+          await legacyDbFile.copy(backupCopy.path);
+        }
       } catch (e) {
         // If copy fails, fallback to legacy file safely to prevent data loss
-        return NativeDatabase.createInBackground(legacyDbFile);
+        return legacyDbFile;
       }
     }
 
-    return NativeDatabase.createInBackground(newDbFile);
+    return newDbFile;
+  }
+}
+
+LazyDatabase _openConnection() {
+  return LazyDatabase(() async {
+    final dbFolder = await getApplicationDocumentsDirectory();
+    final targetFile = await AppDatabase.resolveDatabaseFile(dbFolder: dbFolder);
+    return NativeDatabase.createInBackground(targetFile);
   });
 }
 
