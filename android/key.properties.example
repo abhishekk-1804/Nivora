@@ -1,0 +1,8 @@
+# Nivora Release Keystore Configuration Example
+# Copy this file to `android/key.properties` and populate with your production release signing credentials.
+# DO NOT commit the real key.properties or .jks/.keystore files to version control.
+
+storePassword=YOUR_KEYSTORE_PASSWORD
+keyPassword=YOUR_KEY_PASSWORD
+keyAlias=YOUR_KEY_ALIAS
+storeFile=../keystores/release.keystore

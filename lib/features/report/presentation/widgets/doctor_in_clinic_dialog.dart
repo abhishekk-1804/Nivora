@@ -243,12 +243,24 @@ class DoctorInClinicDialog extends StatelessWidget {
   }
 
   String _getRotterdamLabel() {
-    if (data.rotterdamOvulatoryDysfunction && data.rotterdamHyperandrogenism) {
-      return 'Phenotype A (Classic)';
-    } else if (data.rotterdamOvulatoryDysfunction) {
-      return 'Phenotype D (Irregular Cycles)';
-    } else if (data.rotterdamHyperandrogenism) {
-      return 'Hyperandrogenic Only';
+    final od = data.rotterdamOvulatoryDysfunction;
+    final ha = data.rotterdamHyperandrogenism;
+    final pcom = data.rotterdamPCOM;
+
+    if (od && ha && pcom) {
+      return 'Phenotype A (Full Criteria)';
+    } else if (od && ha) {
+      return 'Phenotype B (Classic)';
+    } else if (ha && pcom) {
+      return 'Phenotype C (Ovulatory)';
+    } else if (od && pcom) {
+      return 'Phenotype D (Non-Hyperandrogenic)';
+    } else if (od) {
+      return 'Ovulatory Dysfunction (Unconfirmed PCOM)';
+    } else if (ha) {
+      return 'Hyperandrogenic Signs';
+    } else if (pcom) {
+      return 'Polycystic Ovaries (PCOM Only)';
     }
     return 'Subclinical / Normal';
   }
@@ -318,6 +330,7 @@ class DoctorInClinicDialog extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
             icon,
@@ -326,6 +339,7 @@ class DoctorInClinicDialog extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
+            flex: 2,
             child: Text(
               label,
               style: const TextStyle(
@@ -335,12 +349,17 @@ class DoctorInClinicDialog extends StatelessWidget {
               ),
             ),
           ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 13,
-              color: textColor,
-              fontWeight: (isAlert || isHighlight) ? FontWeight.w700 : FontWeight.w600,
+          const SizedBox(width: 8),
+          Expanded(
+            flex: 3,
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: TextStyle(
+                fontSize: 13,
+                color: textColor,
+                fontWeight: (isAlert || isHighlight) ? FontWeight.w700 : FontWeight.w600,
+              ),
             ),
           ),
         ],
