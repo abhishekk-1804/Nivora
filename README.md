@@ -4,7 +4,8 @@
 [![Flutter Version](https://img.shields.io/badge/Flutter-3.x-blue.svg)](https://flutter.dev)
 [![Database](https://img.shields.io/badge/Database-Drift_SQLite-green.svg)](https://drift.simonbinder.eu/)
 [![Privacy](https://img.shields.io/badge/Privacy-100%25_Local-F43F5E.svg)](#-privacy-architecture--security-model)
-[![Tests](https://img.shields.io/badge/Tests-111%20Passed-brightgreen.svg)](#-testing--quality-assurance)
+[![Tests](https://img.shields.io/badge/Tests-114%20Passed-brightgreen.svg)](#-testing--quality-assurance)
+[![Release Readiness](https://img.shields.io/badge/Release-Certified-success.svg)](docs/RELEASE_READINESS.md)
 
 Nivora is not just another period tracker. Most commercial FemTech applications monetize through invasive data brokers, opaque cloud storage, and predictive vanity metrics. **Nivora** is engineered for **clinical utility, longitudinal compliance, and diagnostic recall relief** — purpose-built for individuals managing doctor-directed regimens, PCOS, irregular cycles, and PMDD.
 
