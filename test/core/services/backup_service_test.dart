@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nivora_app/core/services/backup_service.dart';
+import 'package:encrypt/encrypt.dart' as enc;
+import 'package:pointycastle/export.dart' as pc;
 
 void main() {
-  group('BackupService Cryptography Tests', () {
+  group('BackupService Cryptography Tests (Phase 2 Hardening)', () {
     const testPassphrase = 'my_super_secret_password_123!';
     final Map<String, dynamic> dummyData = {
       'cycleEvents': [],
@@ -18,99 +22,226 @@ void main() {
       'metabolicLogs': [],
     };
 
-    test('Encryption and Decryption are lossless', () {
-      // 1. Encrypt the data
+    // Helper to generate a genuine legacy V1 backup string (salt:iv:ciphertext)
+    String generateLegacyV1Backup(Map<String, dynamic> data, String passphrase) {
+      final payload = {
+        'version': 1,
+        'timestamp': DateTime.now().toIso8601String(),
+        'data': data,
+      };
+      final jsonString = jsonEncode(payload);
+      final salt = enc.IV.fromSecureRandom(16);
+      final passphraseBytes = Uint8List.fromList(utf8.encode(passphrase));
+      final derivator = pc.KeyDerivator('SHA-256/HMAC/PBKDF2')
+        ..init(pc.Pbkdf2Parameters(salt.bytes, 100000, 32));
+      final derivedKeyBytes = derivator.process(passphraseBytes);
+      final key = enc.Key(derivedKeyBytes);
+      final iv = enc.IV.fromSecureRandom(16);
+      final encrypter = enc.Encrypter(enc.AES(key));
+      final encrypted = encrypter.encrypt(jsonString, iv: iv);
+      return '${salt.base64}:${iv.base64}:${encrypted.base64}';
+    }
+
+    test('V2 Authenticated Encryption and Decryption are lossless and properly versioned', () {
       final encryptionArgs = {
         'data': dummyData,
         'passphrase': testPassphrase,
       };
-      
+
       final encryptedString = performHeavyEncryption(encryptionArgs);
-      
-      // The output format is salt:iv:ciphertext.
-      // NOTE: parts.length must be >= 3, NOT == 3, because standard base64
-      // encoding may produce colons in the ciphertext on some edge cases.
-      // The fix: use parts.sublist(2).join(':') to reconstruct the ciphertext.
+
+      // Verify V2 envelope structure: NIVORA-BACKUP-V2:salt:nonce:ciphertext_with_tag
+      expect(encryptedString.startsWith('NIVORA-BACKUP-V2:'), isTrue);
       final parts = encryptedString.split(':');
-      expect(parts.length, greaterThanOrEqualTo(3));
-      expect(parts[0].isNotEmpty, true); // salt
-      expect(parts[1].isNotEmpty, true); // iv
-      expect(parts.sublist(2).join(':').isNotEmpty, true); // payload
+      expect(parts.length, greaterThanOrEqualTo(4));
+      expect(parts[0], equals('NIVORA-BACKUP-V2'));
 
+      final salt = base64Decode(parts[1]);
+      final nonce = base64Decode(parts[2]);
+      final ciphertextWithTag = base64Decode(parts.sublist(3).join(':'));
 
-      // 2. Decrypt the data
-      final decryptionArgs = {
+      expect(salt.length, equals(16)); // 128-bit salt
+      expect(nonce.length, equals(12)); // 96-bit GCM nonce
+      expect(ciphertextWithTag.length, greaterThan(16)); // ciphertext + 128-bit tag
+
+      // Decrypt
+      final decryptedData = performHeavyDecryption({
         'content': encryptedString,
         'passphrase': testPassphrase,
-      };
+      });
 
-      final decryptedData = performHeavyDecryption(decryptionArgs);
-
-      // 3. Verify Lossless Nature
       expect(decryptedData['labResults'], isNotEmpty);
-      expect(decryptedData['labResults'][0]['testName'], 'HbA1c');
-      expect(decryptedData['clinicalProfile'][0]['phenotype'], 'PCOS_A');
+      expect(decryptedData['labResults'][0]['testName'], equals('HbA1c'));
+      expect(decryptedData['clinicalProfile'][0]['phenotype'], equals('PCOS_A'));
     });
 
     test('Decryption fails with incorrect passphrase', () {
-      // 1. Encrypt the data with correct passphrase
-      final encryptionArgs = {
+      final encryptedString = performHeavyEncryption({
         'data': dummyData,
         'passphrase': testPassphrase,
-      };
-      
-      final encryptedString = performHeavyEncryption(encryptionArgs);
-
-      // 2. Attempt Decryption with wrong passphrase
-      final badDecryptionArgs = {
-        'content': encryptedString,
-        'passphrase': 'wrong_password',
-      };
+      });
 
       expect(
-        () => performHeavyDecryption(badDecryptionArgs),
-        throwsA(isA<Exception>().having((e) => e.toString(), 'message', contains('Incorrect passphrase'))),
+        () => performHeavyDecryption({
+          'content': encryptedString,
+          'passphrase': 'wrong_password',
+        }),
+        throwsA(isA<FormatException>().having(
+          (e) => e.message,
+          'message',
+          contains('Incorrect passphrase or corrupted backup file'),
+        )),
       );
     });
 
-    test('Decryption fails with corrupted payload', () {
-      final corruptedString = 'badsalt:badiv:badpayload==';
-      
-      final badDecryptionArgs = {
-        'content': corruptedString,
+    test('Cryptographic Tamper Detection: Single-byte ciphertext modification fails authentication', () {
+      final encryptedString = performHeavyEncryption({
+        'data': dummyData,
         'passphrase': testPassphrase,
-      };
+      });
+
+      final parts = encryptedString.split(':');
+      final rawCt = base64Decode(parts.sublist(3).join(':'));
+      rawCt[0] ^= 0x01; // flip 1 bit in ciphertext
+
+      final tampered = '${parts[0]}:${parts[1]}:${parts[2]}:${base64Encode(rawCt)}';
 
       expect(
-        () => performHeavyDecryption(badDecryptionArgs),
-        throwsA(isA<Exception>()),
+        () => performHeavyDecryption({
+          'content': tampered,
+          'passphrase': testPassphrase,
+        }),
+        throwsA(isA<FormatException>().having(
+          (e) => e.message,
+          'message',
+          contains('authentication tag mismatch'),
+        )),
       );
     });
 
-    test('TC-B02: content with < 2 colons throws Invalid backup file format', () {
+    test('Cryptographic Tamper Detection: Nonce modification fails authentication', () {
+      final encryptedString = performHeavyEncryption({
+        'data': dummyData,
+        'passphrase': testPassphrase,
+      });
+
+      final parts = encryptedString.split(':');
+      final rawNonce = base64Decode(parts[2]);
+      rawNonce[0] ^= 0x01; // flip 1 bit in nonce
+
+      final tampered = '${parts[0]}:${parts[1]}:${base64Encode(rawNonce)}:${parts.sublist(3).join(':')}';
+
       expect(
-        () => performHeavyDecryption({'content': 'nocolons', 'passphrase': testPassphrase}),
-        throwsA(predicate<Exception>((e) => e.toString().contains('Invalid backup file format'))),
+        () => performHeavyDecryption({
+          'content': tampered,
+          'passphrase': testPassphrase,
+        }),
+        throwsA(isA<FormatException>().having(
+          (e) => e.message,
+          'message',
+          contains('authentication tag mismatch'),
+        )),
       );
     });
 
-    test('TC-B02: rejoining sublist(2) recovers full ciphertext correctly', () {
-      final encrypted = performHeavyEncryption({'data': dummyData, 'passphrase': testPassphrase});
-      final parts = encrypted.split(':');
-      final rejoined = '${parts[0]}:${parts[1]}:${parts.sublist(2).join(':')}'; 
-      // Must decrypt successfully even after the rejoin
-      final decrypted = performHeavyDecryption({'content': rejoined, 'passphrase': testPassphrase});
-      expect(decrypted['labResults'][0]['testName'], 'HbA1c');
+    test('Cryptographic Tamper Detection: Authentication tag modification fails authentication', () {
+      final encryptedString = performHeavyEncryption({
+        'data': dummyData,
+        'passphrase': testPassphrase,
+      });
+
+      final parts = encryptedString.split(':');
+      final rawCt = base64Decode(parts.sublist(3).join(':'));
+      // The last 16 bytes contain the GCM authentication tag
+      rawCt[rawCt.length - 1] ^= 0x01;
+
+      final tampered = '${parts[0]}:${parts[1]}:${parts[2]}:${base64Encode(rawCt)}';
+
+      expect(
+        () => performHeavyDecryption({
+          'content': tampered,
+          'passphrase': testPassphrase,
+        }),
+        throwsA(isA<FormatException>().having(
+          (e) => e.message,
+          'message',
+          contains('authentication tag mismatch'),
+        )),
+      );
     });
 
-    test('Backup timestamp string has correct format (YYYY-MM-DDTHH-MM-SS)', () {
-      final stamp = DateTime.now()
-          .toIso8601String()
-          .replaceAll(':', '-')
-          .replaceAll('.', '-')
-          .substring(0, 19);
-      expect(stamp.length, 19);
-      expect(stamp, matches(RegExp(r'\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}')));
+    test('Cryptographic Tamper Detection: Truncated ciphertext fails safely', () {
+      final encryptedString = performHeavyEncryption({
+        'data': dummyData,
+        'passphrase': testPassphrase,
+      });
+
+      final parts = encryptedString.split(':');
+      final rawCt = base64Decode(parts.sublist(3).join(':'));
+      // Truncate by 10 bytes
+      final truncatedCt = rawCt.sublist(0, rawCt.length - 10);
+      final tampered = '${parts[0]}:${parts[1]}:${parts[2]}:${base64Encode(truncatedCt)}';
+
+      expect(
+        () => performHeavyDecryption({
+          'content': tampered,
+          'passphrase': testPassphrase,
+        }),
+        throwsA(isA<FormatException>().having(
+          (e) => e.message,
+          'message',
+          contains('authentication tag mismatch'),
+        )),
+      );
+    });
+
+    test('Envelope Validation: Malformed header and empty payload fail safely', () {
+      expect(
+        () => performHeavyDecryption({
+          'content': 'NIVORA-BACKUP-V2:invalid',
+          'passphrase': testPassphrase,
+        }),
+        throwsA(isA<FormatException>()),
+      );
+
+      expect(
+        () => performHeavyDecryption({
+          'content': 'random_invalid_string',
+          'passphrase': testPassphrase,
+        }),
+        throwsA(isA<FormatException>()),
+      );
+    });
+
+    test('Random Cryptographic Material: Successive backups produce distinct salts and nonces', () {
+      final enc1 = performHeavyEncryption({'data': dummyData, 'passphrase': testPassphrase});
+      final enc2 = performHeavyEncryption({'data': dummyData, 'passphrase': testPassphrase});
+
+      final parts1 = enc1.split(':');
+      final parts2 = enc2.split(':');
+
+      // Salts must differ
+      expect(parts1[1], isNot(equals(parts2[1])));
+      // Nonces must differ
+      expect(parts1[2], isNot(equals(parts2[2])));
+      // Ciphertexts must differ
+      expect(parts1[3], isNot(equals(parts2[3])));
+    });
+
+    test('Backward Compatibility: Legacy V1 unauthenticated backups remain fully importable', () {
+      final legacyV1Payload = generateLegacyV1Backup(dummyData, testPassphrase);
+
+      // Verify V1 has no V2 prefix
+      expect(legacyV1Payload.startsWith('NIVORA-BACKUP-V2:'), isFalse);
+
+      final decrypted = performHeavyDecryption({
+        'content': legacyV1Payload,
+        'passphrase': testPassphrase,
+      });
+
+      expect(decrypted['labResults'], isNotEmpty);
+      expect(decrypted['labResults'][0]['testName'], equals('HbA1c'));
+      expect(decrypted['clinicalProfile'][0]['phenotype'], equals('PCOS_A'));
     });
   });
 }

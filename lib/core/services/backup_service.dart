@@ -139,7 +139,7 @@ String performHeavyEncryption(Map<String, dynamic> args) {
   final passphrase = args['passphrase'] as String;
 
   final payload = {
-    'version': 1,
+    'version': 2,
     'timestamp': DateTime.now().toIso8601String(),
     'data': dataMaps,
   };
@@ -150,30 +150,31 @@ String performHeavyEncryption(Map<String, dynamic> args) {
   // Heavy operation 2: Cryptographic Key Derivation (PBKDF2)
   // Generates a mathematically secure 32-byte key from the passphrase
   // using 100,000 iterations of SHA-256 to prevent brute-force attacks.
-  //
-  // S-01 mitigation: Convert passphrase to a mutable byte array, derive the key,
-  // then zero the byte array immediately after. Dart String is immutable/GC-managed
-  // so the String object itself cannot be zeroed, but zeroing the byte representation
-  // reduces the window during which raw passphrase bytes are live on the heap.
-  final salt = enc.IV.fromSecureRandom(16);
+  final salt = enc.IV.fromSecureRandom(16).bytes;
+  final nonce = enc.IV.fromSecureRandom(12).bytes; // 96-bit standard nonce for GCM
+
   final passphraseBytes = Uint8List.fromList(utf8.encode(passphrase));
-  
   final derivator = pc.KeyDerivator('SHA-256/HMAC/PBKDF2')
-    ..init(pc.Pbkdf2Parameters(salt.bytes, 100000, 32));
-    
+    ..init(pc.Pbkdf2Parameters(salt, 100000, 32));
   final derivedKeyBytes = derivator.process(passphraseBytes);
   // Zero the passphrase bytes immediately after key derivation.
   passphraseBytes.fillRange(0, passphraseBytes.length, 0);
-  
-  final key = enc.Key(derivedKeyBytes);
-  final iv = enc.IV.fromSecureRandom(16);
 
-  // Heavy operation 3: AES-256 Encryption
-  final encrypter = enc.Encrypter(enc.AES(key));
-  final encrypted = encrypter.encrypt(jsonString, iv: iv);
+  // Heavy operation 3: AES-256-GCM Authenticated Encryption
+  final cipher = pc.GCMBlockCipher(pc.AESEngine());
+  final params = pc.AEADParameters(
+    pc.KeyParameter(derivedKeyBytes),
+    128, // 128-bit authentication tag
+    nonce,
+    Uint8List(0), // no AAD
+  );
+  cipher.init(true, params);
+  final plaintextBytes = Uint8List.fromList(utf8.encode(jsonString));
+  final ciphertextWithTag = cipher.process(plaintextBytes);
 
-  // Prepend salt and IV so we can decrypt later
-  return '${salt.base64}:${iv.base64}:${encrypted.base64}';
+  // Serialize versioned envelope:
+  // NIVORA-BACKUP-V2:<salt_base64>:<nonce_base64>:<ciphertext_with_tag_base64>
+  return 'NIVORA-BACKUP-V2:${base64Encode(salt)}:${base64Encode(nonce)}:${base64Encode(ciphertextWithTag)}';
 }
 
 @visibleForTesting
@@ -182,51 +183,89 @@ Map<String, dynamic> performHeavyDecryption(Map<String, dynamic> args) {
   final content = args['content'] as String;
   final passphrase = args['passphrase'] as String;
 
-  final parts = content.split(':');
-  if (parts.length < 3) {
-    throw Exception('Invalid backup file format.');
-  }
-  // The first two ':' delimit salt and IV; the remainder is the encrypted base64.
-  // base64-standard characters do NOT include ':', so this is safe to join.
-  final saltBase64 = parts[0];
-  final ivBase64 = parts[1];
-  final encryptedBase64 = parts.sublist(2).join(':');
-
-  final saltBytes = base64Decode(saltBase64);
-  
-  final derivator = pc.KeyDerivator('SHA-256/HMAC/PBKDF2')
-    ..init(pc.Pbkdf2Parameters(saltBytes, 100000, 32));
-    
-  final passphraseBytes = Uint8List.fromList(utf8.encode(passphrase));
-  final derivedKeyBytes = derivator.process(passphraseBytes);
-  // Zero the passphrase bytes immediately after key derivation.
-  passphraseBytes.fillRange(0, passphraseBytes.length, 0);
-  final key = enc.Key(derivedKeyBytes);
-  final iv = enc.IV.fromBase64(ivBase64);
-
-  final encrypter = enc.Encrypter(enc.AES(key));
-  
   String decryptedString;
-  try {
-    decryptedString = encrypter.decrypt64(encryptedBase64, iv: iv);
-  } catch (e) {
-    throw Exception('Incorrect passphrase or corrupted backup file.');
+
+  if (content.startsWith('NIVORA-BACKUP-V2:')) {
+    final parts = content.split(':');
+    if (parts.length < 4) {
+      throw const FormatException('Invalid V2 backup envelope format.');
+    }
+    final salt = base64Decode(parts[1]);
+    final nonce = base64Decode(parts[2]);
+    final ciphertextWithTag = base64Decode(parts.sublist(3).join(':'));
+
+    if (salt.length != 16 || nonce.length != 12 || ciphertextWithTag.length < 16) {
+      throw const FormatException('Invalid V2 backup cryptographic header or truncated payload.');
+    }
+
+    final passphraseBytes = Uint8List.fromList(utf8.encode(passphrase));
+    final derivator = pc.KeyDerivator('SHA-256/HMAC/PBKDF2')
+      ..init(pc.Pbkdf2Parameters(salt, 100000, 32));
+    final derivedKeyBytes = derivator.process(passphraseBytes);
+    passphraseBytes.fillRange(0, passphraseBytes.length, 0);
+
+    final cipher = pc.GCMBlockCipher(pc.AESEngine());
+    final params = pc.AEADParameters(
+      pc.KeyParameter(derivedKeyBytes),
+      128,
+      nonce,
+      Uint8List(0),
+    );
+    cipher.init(false, params);
+    try {
+      final decryptedBytes = cipher.process(ciphertextWithTag);
+      decryptedString = utf8.decode(decryptedBytes);
+    } catch (e) {
+      throw const FormatException('Incorrect passphrase or corrupted backup file (authentication tag mismatch).');
+    }
+  } else {
+    // Legacy V1 backup format backward compatibility (.imyrabackup or v1 .nivorabackup)
+    final parts = content.split(':');
+    if (parts.length < 3) {
+      throw const FormatException('Invalid backup file format.');
+    }
+    final salt = base64Decode(parts[0]);
+    final iv = enc.IV.fromBase64(parts[1]);
+    final encryptedBase64 = parts.sublist(2).join(':');
+
+    final passphraseBytes = Uint8List.fromList(utf8.encode(passphrase));
+    final derivator = pc.KeyDerivator('SHA-256/HMAC/PBKDF2')
+      ..init(pc.Pbkdf2Parameters(salt, 100000, 32));
+    final derivedKeyBytes = derivator.process(passphraseBytes);
+    passphraseBytes.fillRange(0, passphraseBytes.length, 0);
+
+    final key = enc.Key(derivedKeyBytes);
+    final encrypter = enc.Encrypter(enc.AES(key));
+    try {
+      decryptedString = encrypter.decrypt64(encryptedBase64, iv: iv);
+    } catch (e) {
+      throw const FormatException('Incorrect passphrase or corrupted legacy backup file.');
+    }
   }
 
   final payload = jsonDecode(decryptedString) as Map<String, dynamic>;
-  
-  if (!payload.containsKey('version') || payload['version'] != 1) {
+
+  final version = payload['version'] as int?;
+  if (version != 1 && version != 2) {
     throw const FormatException('Unsupported backup version or corrupted file.');
   }
-  
+
   if (!payload.containsKey('data')) {
     throw const FormatException('Backup file is missing required data.');
   }
-  
+
   final data = payload['data'] as Map<String, dynamic>;
-  
+
   // Validate expected arrays exist
-  final expectedKeys = ['cycleEvents', 'routines', 'routineLogs', 'interventions', 'labResults', 'clinicalProfile', 'metabolicLogs'];
+  final expectedKeys = [
+    'cycleEvents',
+    'routines',
+    'routineLogs',
+    'interventions',
+    'labResults',
+    'clinicalProfile',
+    'metabolicLogs',
+  ];
   for (final key in expectedKeys) {
     if (!data.containsKey(key) || data[key] is! List) {
       throw const FormatException('Backup file has invalid or missing table data.');
