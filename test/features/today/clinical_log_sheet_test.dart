@@ -14,7 +14,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  group('ClinicalLogSheet — Widget Tests', () {
+  group('ClinicalLogSheet - Widget Tests', () {
     testWidgets('Renders all tabs and forms correctly', (tester) async {
       final db = AppDatabase.forTesting(NativeDatabase.memory());
       final prefs = await SharedPreferences.getInstance();

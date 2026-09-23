@@ -49,7 +49,7 @@ class AppTheme {
       fontFamily: 'Inter', // Premium geometric sans-serif (ensure it's in pubspec if strictly needed, but fallback to system sans-serif like Roboto/SF Pro)
       colorScheme: const ColorScheme.light(
         surface: AppColors.warmCanvas,
-        primary: AppColors.brandAction,      // Fixed: was charcoalInk — caused black progress bars
+        primary: AppColors.brandAction,      // Fixed: was charcoalInk - caused black progress bars
         onPrimary: Colors.white,
         secondary: AppColors.brandAction,
         onSecondary: Colors.white,

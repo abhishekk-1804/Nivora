@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nivora_app/core/services/backup_service.dart';
 
 void main() {
-  group('BackupService — restore flow edge cases', () {
+  group('BackupService - restore flow edge cases', () {
     test('TC-BR01: Restore with wrong passphrase throws Exception', () async {
       // Arrange: encrypt with one passphrase
       // This is a unit-level test using the isolate function directly
@@ -33,7 +33,7 @@ void main() {
       // Verify that encryption completes without retaining passphrase in the returned value
       final payload = {'cycles': [], 'routines': [], 'version': 1};
       final result = performHeavyEncryption({'data': payload, 'passphrase': 'secret'});
-      // Result is salt:iv:ciphertext — passphrase should not appear in output
+      // Result is salt:iv:ciphertext - passphrase should not appear in output
       expect(result, isNot(contains('secret')));
     });
   });

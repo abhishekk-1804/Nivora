@@ -9,8 +9,8 @@
 
 ## 1. Automated Software Gates (Completed & Certified)
 
-- [x] **Static Analysis:** `dart analyze` — 0 issues found.
-- [x] **Automated Tests:** `flutter test --reporter=compact` — 114/114 passing across 31 test files.
+- [x] **Static Analysis:** `dart analyze` - 0 issues found.
+- [x] **Automated Tests:** `flutter test --reporter=compact` - 114/114 passing across 31 test files.
 - [x] **Air-Gap Verification:** `android.permission.INTERNET` absent in release manifest.
 - [x] **Font Network Isolation:** `GoogleFonts.config.allowRuntimeFetching = false;` in `main()`.
 - [x] **Backup Cryptography:** Authenticated AES-256-GCM + PBKDF2 (100k iterations) with tamper rejection.

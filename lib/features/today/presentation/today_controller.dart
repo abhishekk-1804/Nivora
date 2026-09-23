@@ -107,7 +107,7 @@ class TodayController extends _$TodayController {
             );
           } else {
             if (routine.regimenType != 'Daily') {
-              // E-08: Unknown regimen type — log a warning so it surfaces in crash reports.
+              // E-08: Unknown regimen type - log a warning so it surfaces in crash reports.
               // Falls back to Daily behaviour (no break periods) as a safe default.
               ErrorLogger.error(
                 'TodayController: unknown regimenType "${routine.regimenType}" for routine '
@@ -127,7 +127,7 @@ class TodayController extends _$TodayController {
           final routineLogs = allRecentLogs.where((l) => l.routineId == routine.id).toList();
 
           // Calculate missed logs for past 3 days (excluding today).
-          // Daily routines NEVER have break periods — only Cyclic_21_7 does.
+          // Daily routines NEVER have break periods - only Cyclic_21_7 does.
           for (int i = 1; i <= 3; i++) {
             final d = now.subtract(Duration(days: i));
             final bool isBreak;

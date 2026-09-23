@@ -82,7 +82,7 @@ class CycleController extends _$CycleController {
         continue;
       }
 
-      // events are already ordered DESC — bleedingEvents preserves that order
+      // events are already ordered DESC - bleedingEvents preserves that order
       final mostRecent = bleedingEvents.first;
       final daysSinceLast = AppDateUtils.daysBetween(mostRecent.date, now);
 
@@ -133,7 +133,7 @@ class CycleController extends _$CycleController {
 
       // ── Find the true streak start ──────────────────────────────────────────
       // Walk backwards through bleeding events (already DESC) to find the first
-      // consecutive day — this gives us the real cycle Day 1.
+      // consecutive day - this gives us the real cycle Day 1.
       CycleEvent streakStart = mostRecent;
       for (int i = 1; i < bleedingEvents.length; i++) {
         final gap = AppDateUtils.daysBetween(bleedingEvents[i].date, streakStart.date);
@@ -205,7 +205,7 @@ class CycleController extends _$CycleController {
     await dao.logCycleEvent(
       date: DateTime.now(),
       flowType: 'Anovulatory',
-      // B-04 fix: must be false — anovulatory months are clinical records only.
+      // B-04 fix: must be false - anovulatory months are clinical records only.
       // They must NOT affect streak, cycleDay, or median cycle length calculations.
       isTrueCycleStart: false,
       symptoms: 'Anovulatory / Missed Cycle',

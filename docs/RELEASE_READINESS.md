@@ -156,7 +156,7 @@ Verified via `flutter test`:
 | `test/features/today/today_controller_test.dart` | 8 | Daily checklist state transitions and adherence logging | `[VERIFIED]` |
 | `test/features/today/today_screen_test.dart` | 4 | Today screen widgets, energy chips, quick log sheet triggers | `[VERIFIED]` |
 | `test/features/today/today_state_test.dart` | 2 | Daily state immutability | `[VERIFIED]` |
-| **TOTAL** | **114 Tests** | **31 Test Files — 100% Passed (0 Failures)** | `[VERIFIED]` |
+| **TOTAL** | **114 Tests** | **31 Test Files - 100% Passed (0 Failures)** | `[VERIFIED]` |
 
 ---
 

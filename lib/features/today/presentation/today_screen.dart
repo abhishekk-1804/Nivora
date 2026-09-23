@@ -50,7 +50,7 @@ class PrivacyBlur extends ConsumerWidget {
 }
 
 class TodayScreen extends ConsumerStatefulWidget {
-  /// Called when the user taps the settings icon — lets the parent shell
+  /// Called when the user taps the settings icon - lets the parent shell
   /// switch the bottom-nav to the Settings tab without a push route.
   final VoidCallback? onNavigateToSettings;
   const TodayScreen({super.key, this.onNavigateToSettings});
@@ -983,7 +983,7 @@ class _GreetingBlock extends ConsumerStatefulWidget {
 class _GreetingBlockState extends ConsumerState<_GreetingBlock> {
   // T2-1: Track which energy/mood chip was last tapped. ValueNotifier is passed down
   // to each chip so they can de-select each other.
-  // Initialized from DB on first build — survives Riverpod provider rebuilds.
+  // Initialized from DB on first build - survives Riverpod provider rebuilds.
   final ValueNotifier<String?> _selectedEnergy = ValueNotifier(null);
   final ValueNotifier<String?> _selectedMood = ValueNotifier(null);
   bool _chipsInitialized = false;
@@ -1020,7 +1020,7 @@ class _GreetingBlockState extends ConsumerState<_GreetingBlock> {
         if (s.startsWith('Energy: ')) {
           _selectedEnergy.value = s.replaceFirst('Energy: ', '');
         } else if (s.startsWith('Mood: ')) {
-          // 'Mood: Good 🙂' — strip the emoji suffix for matching
+          // 'Mood: Good 🙂' - strip the emoji suffix for matching
           final parts = s.replaceFirst('Mood: ', '').split(' ');
           if (parts.isNotEmpty) _selectedMood.value = parts.first;
         }
@@ -1232,7 +1232,7 @@ class _EnergyChipState extends ConsumerState<_EnergyChip>
     _scaleCtrl.forward(from: 0);
     HapticFeedback.lightImpact(); // Subtle chip-select tap
 
-    // Update selected state (ValueNotifier — no Riverpod provider needed).
+    // Update selected state (ValueNotifier - no Riverpod provider needed).
     widget.selectedEnergy.value = widget.label;
     ref.read(cycleControllerProvider.notifier).logSymptomOnly('Energy: ${widget.label}');
 
@@ -1463,7 +1463,7 @@ class _MedicationCardState extends State<_MedicationCard>
   // E-03 fix: Prevent duplicate RoutineLogs from rapid double-taps.
   // The DAO's logIntake() is an upsert, but there's a tiny race window between
   // the getSingleOrNull check and the insert. This bool gate closes that window
-  // at the UI layer — the button is re-enabled once the stream pushes isTaken=true.
+  // at the UI layer - the button is re-enabled once the stream pushes isTaken=true.
   bool _isTaking = false;
 
   void _handleMarkTaken() {
@@ -1473,7 +1473,7 @@ class _MedicationCardState extends State<_MedicationCard>
     _celebrationCtrl.forward(from: 0);
     widget.onMarkTaken();
     // The stream update will rebuild this widget with isTaken=true,
-    // at which point the button is replaced entirely — no need to reset _isTaking.
+    // at which point the button is replaced entirely - no need to reset _isTaking.
   }
 
   @override

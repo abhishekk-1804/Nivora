@@ -20,7 +20,7 @@ class SplashScreen extends ConsumerStatefulWidget {
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
-  // Guard flag — prevents double-navigation if widget rebuilds unexpectedly.
+  // Guard flag - prevents double-navigation if widget rebuilds unexpectedly.
   bool _hasNavigated = false;
 
   @override

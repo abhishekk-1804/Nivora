@@ -52,7 +52,7 @@ void main() {
     return null;
   });
 
-  group('RoutineSetupSheet — Save Logic', () {
+  group('RoutineSetupSheet - Save Logic', () {
     testWidgets('TC-R03: Saves new routine to database', (tester) async {
       debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
       final db = AppDatabase.forTesting(NativeDatabase.memory());

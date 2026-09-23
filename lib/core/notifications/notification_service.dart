@@ -13,7 +13,7 @@ class NotificationService {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    // requestAlertPermission: false — onboarding owns the first-time system prompt.
+    // requestAlertPermission: false - onboarding owns the first-time system prompt.
     // We only initialise here; the user explicitly grants permission on page 2 of onboarding.
     const DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(

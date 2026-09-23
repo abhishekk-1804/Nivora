@@ -95,7 +95,7 @@ void main() {
     debugDefaultTargetPlatformOverride = null;
   });
 
-  group('NotificationService — Deterministic Scheduling & Privacy Audit', () {
+  group('NotificationService - Deterministic Scheduling & Privacy Audit', () {
     test('Daily routine scheduling uses neutral privacy-preserving text and daily match', () async {
       final startDate = DateTime.now().subtract(const Duration(days: 5));
 

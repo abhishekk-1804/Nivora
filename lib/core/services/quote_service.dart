@@ -15,7 +15,7 @@ class QuoteService {
     } catch (e) {
       // Fallback
       return QuoteService({
-        'general': ['Your body is not broken — it is asking to be understood.']
+        'general': ['Your body is not broken - it is asking to be understood.']
       });
     }
   }

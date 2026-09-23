@@ -44,7 +44,7 @@ void main() {
     );
   }
 
-  group('DoctorInClinicDialog — Clinical Verification', () {
+  group('DoctorInClinicDialog - Clinical Verification', () {
     testWidgets('renders clinical parameters and metrics accurately', (tester) async {
       tester.view.physicalSize = const Size(800, 1000);
       tester.view.devicePixelRatio = 1.0;

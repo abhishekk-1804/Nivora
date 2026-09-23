@@ -1,9 +1,9 @@
 # Nivora Device Validation Protocol
 
-**Application:** Nivora  
-**Application ID:** `com.nivora.health`  
-**Bundle ID:** `com.nivora.health.NivoraApp`  
-**Status:** `[NOT EXECUTED — DEVICE REQUIRED]`  
+**Application:** Nivora
+**Application ID:** `com.nivora.health`
+**Bundle ID:** `com.nivora.health.NivoraApp`
+**Status:** `[NOT EXECUTED - DEVICE REQUIRED]`
 **Target Hardware:** Minimum 1 stock Android device (Google Pixel) and 1 OEM custom OS device (Samsung Galaxy OneUI / Xiaomi MIUI).
 
 ---

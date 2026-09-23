@@ -1,106 +1,69 @@
-# Nivora Architecture
+# Nivora architecture
 
-Nivora is built on a 100% local-first, offline architecture designed to maximize user privacy and clinical utility.
+Nivora is a Flutter mobile application whose primary data path is local. The application uses Riverpod for state coordination, Drift for typed SQLite access, and platform plugins for authentication, notifications, file selection, sharing, and printing.
 
-## 1. System Architecture Flow
+## Application flow
+
 ```mermaid
 graph TD
-    subgraph Presentation Layer
-        UI[Flutter UI Widgets]
-    end
-    subgraph State Management
-        R[Riverpod Providers & Controllers]
-    end
-    subgraph Data Access Layer
-        D[Drift DAOs]
-    end
-    subgraph Storage
-        DB[(Local SQLite Database)]
-    end
+    UI[Flutter widgets and screens]
+    State[Riverpod providers and feature controllers]
+    DAO[Drift DAOs]
+    DB[(SQLite database)]
+    Report[Report aggregation and PDF generator]
+    Backup[Backup and restore service]
+    Native[Platform plugins]
 
-    UI -->|Triggers Actions| R
-    R -->|Reads/Writes| D
-    D -->|Executes SQL| DB
-    DB -->|Streams Updates| D
-    D -->|Yields Data| R
-    R -->|Rebuilds UI| UI
+    UI --> State
+    State --> DAO
+    DAO --> DB
+    DB --> DAO
+    DAO --> State
+    State --> UI
+    State --> Report
+    State --> Backup
+    UI --> Native
+    Native --> UI
 ```
 
-## 2. Database Schema (Drift / SQLite)
-Nivora relies on a relational, type-safe SQLite database powered by `drift` at `nivora_health.sqlite`.
+The reviewed release application source contains no cloud synchronization, analytics endpoint, or production HTTP client. The Android debug manifest includes Flutter's development INTERNET permission, so release manifests should be checked as part of every release audit.
 
-```mermaid
-erDiagram
-    ROUTINES ||--|{ ROUTINE_LOGS : "tracks adherence"
-    CYCLE_EVENTS ||--o| TREATMENT_INTERVENTIONS : "benchmarked against"
-    CLINICAL_PROFILE ||--|{ LAB_RESULTS : "monitors biomarkers"
-    CLINICAL_PROFILE ||--|{ METABOLIC_LOGS : "tracks vitals"
+## Persistence
 
-    CYCLE_EVENTS {
-        int id PK
-        DateTime date
-        String flowType
-        bool isTrueCycleStart
-        String symptoms
-    }
-    
-    TREATMENT_INTERVENTIONS {
-        int id PK
-        String title
-        DateTime startDate
-    }
-    
-    ROUTINES {
-        int id PK
-        String name
-        String regimenType
-    }
-    
-    ROUTINE_LOGS {
-        int id PK
-        int routineId FK
-        DateTime scheduledDate
-        String status
-    }
+`AppDatabase` is a Drift database with schema version 6. It opens `nivora_health.sqlite` under the application documents directory. The migration strategy creates the current tables and upgrades older schemas, including a legacy `Ila_health.sqlite` file migration path.
 
-    CLINICAL_PROFILE {
-        int id PK
-        String phenotype
-        bool isDiagnosed
-    }
+The main tables are:
 
-    LAB_RESULTS {
-        int id PK
-        String testName
-        real value
-        DateTime date
-    }
+| Table | Purpose |
+|---|---|
+| `cycle_events` | Cycle dates, flow, symptoms, pain, and cycle-start classification |
+| `routines` | Daily or cyclic routine definitions |
+| `routine_logs` | Routine adherence records |
+| `treatment_interventions` | User-entered intervention context for report comparisons |
+| `clinical_profile` | Structured profile fields used by the advanced tracking flow |
+| `lab_results` | User-entered lab result records |
+| `metabolic_logs` | User-entered metabolic observations |
 
-    METABOLIC_LOGS {
-        int id PK
-        real weight
-        real bloodPressure
-        DateTime date
-    }
-```
+The DAOs provide feature-specific access. Riverpod providers expose the database and DAOs to controllers and screens. Database streams are used where the UI needs to react to updates.
 
-### Core Tables & Relationships:
-- **`CycleEvents`**: The central table for logging flows, symptoms, and pain. The `isTrueCycleStart` flag differentiates between actual menstrual phase starts (Day 1) and mid-cycle spotting, ensuring median cycle lengths and PMDD predictions are mathematically sound. Uses `@TableIndex` on `date` for 10-year query optimization.
-- **`TreatmentInterventions`**: Logs medical interventions (e.g., "Started Metformin"). This table is cross-referenced against `CycleEvents` to calculate "Pre-Treatment" vs "Post-Treatment" benchmarks (median cycle length, heavy bleeding days).
-- **`Routines` & `RoutineLogs`**: `Routines` defines the regimen (e.g., `Cyclic_21_7` or `Daily`), while `RoutineLogs` tracks the daily adherence (`Taken`, `Missed`). Uses `@TableIndex` on `scheduledDate`.
-- **`ClinicalProfile`, `LabResults`, `MetabolicLogs`**: Phenotype-centric tables specifically designed to support long-term PCOS management and metabolic tracking.
+## Backup boundary
 
-## 3. Security, Privacy & Export
-- **App Masking**: The `NivoraApp` lifecycle observer instantly flips an obscuring boolean when the app goes into the `paused` or `inactive` state, hiding clinical data from the iOS/Android app switcher.
-- **Biometric Gate (`local_auth`)**: Every time the app resumes or starts, it triggers `AuthService.authenticate()`, blocking the UI until FaceID or Fingerprint is provided (gracefully failing open to PIN if biometrics fail).
-- **Local Storage At-Rest**: The application database (`nivora_health.sqlite`) uses standard SQLite via `drift` and `NativeDatabase.createInBackground(...)`. It is stored within the platform-enforced private sandbox (e.g. `/data/data/com.nivora.health/` on Android). It is not encrypted with SQLCipher; security at rest relies upon OS-level application sandboxing, non-exportable storage permissions, disabled OS cloud backups (`android:allowBackup="false"`), and device hardware-backed encryption (File-Based Encryption on Android, Data Protection on iOS).
-- **AES-256-GCM Authenticated Encrypted Backups (`pointycastle`, `share_plus`)**: Exported backups (`.nivorabackup`) employ authenticated AES-256-GCM encryption with a 128-bit authentication tag, 96-bit random nonce, and PBKDF2 key derivation (100,000 SHA-256 iterations, 16-byte cryptographically secure salt). Cryptographic tampering (single-byte modification of ciphertext, nonce, or tag) is caught during authentication prior to payload processing. Full backward compatibility is maintained for legacy V1 unauthenticated backups (`.imyrabackup`).
+`BackupService` serializes the seven application table groups into a versioned JSON payload. Version 2 derives a 32-byte key with PBKDF2 using HMAC-SHA-256, 100,000 iterations, and a random 16-byte salt. It encrypts the payload with AES-256-GCM using a random 12-byte nonce and a 128-bit authentication tag.
 
-## 4. State Management (Riverpod)
-- **Dependency Injection**: Riverpod provides global access to the `AppDatabase` and its associated DAOs (`CycleDao`, `RoutineDao`, `ReportDao`, `ClinicalProfileDao`, `MetabolicLogDao`).
-- **Reactive UI**: The UI listens to database changes via StreamProviders (e.g., watching all logs for today). When the user taps "Mark as Taken", the Controller modifies the database, and the StreamProvider automatically pushes the new state to the UI without manual `setState` calls.
-- **Business Logic Separation**: Controllers (like `TodayController` and `ReportController`) handle the heavy lifting (date math, PDF generation) and sit completely separate from the Widget tree.
+Restore decrypts and validates the payload before clearing and repopulating tables inside one database transaction. Legacy V1 `.imyrabackup` files remain importable for compatibility. New exports use `.nivorabackup` and the authenticated V2 envelope.
 
-## 5. UI & Polish (`flutter_animate`)
-- **Micro-Animations**: All primary components (`CycleGraph`, `QuickLogSheet`, `OnboardingScreen`) are augmented with `flutter_animate` to chain fading, sliding, and scaling animations without the boilerplate of Flutter `AnimationController`s.
-- **PCOS Guardrails**: The `CycleGraph` component dynamically measures the screen width using a `LayoutBuilder` and visually caps anomalous cycles (45-120 days) rather than overflowing, alerting the user with an `Nivora Rose` warning badge.
+## Authentication and privacy overlay
+
+`AuthService` delegates to `local_auth` and requests the device authentication mechanism available to the operating system. The application also uses a lifecycle privacy overlay to obscure sensitive content when the app is backgrounded or becomes inactive.
+
+These controls reduce casual access. They are not a substitute for a device passcode, operating-system security, or a security audit. Hardware enrollment and platform behavior remain physical-device validation tasks.
+
+## Notifications and reports
+
+`NotificationService` schedules local routine reminders through `flutter_local_notifications` and `timezone`. Daily reminders repeat by time. Cyclic routines use a moving window of future notifications. Android uses inexact scheduling, so delivery can vary with power-management policies.
+
+Report aggregation is implemented in the report DAO and related feature services. It derives summaries from recorded data, including cycle history, symptom timing, pain scores, treatment comparisons, and profile context. These calculations are report aids, not validated diagnoses.
+
+## Storage security limits
+
+The operational database is standard SQLite and is not SQLCipher-encrypted. At-rest protection therefore depends on the platform application sandbox and device storage protection. Android release configuration disables Android cloud backup. The repository does not claim regulatory compliance, clinical validation, or forensic-grade deletion.

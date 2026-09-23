@@ -38,7 +38,7 @@ class CycleDao extends DatabaseAccessor<AppDatabase> with _$CycleDaoMixin {
   /// - [isTrueCycleStart]: set `false` for mid-cycle spotting / breakthrough bleeding.
   ///   The [QuickLogSheet] auto-suggests this based on flow intensity but the user
   ///   can override. **This field is critical for accurate median cycle length
-  ///   calculations in the clinical PDF — do not default it to `true` blindly.**
+  ///   calculations in the clinical PDF - do not default it to `true` blindly.**
   ///
   /// - [painIntensity]: NRS 0–10. `null` means pain was not assessed. 0 = no pain.
   ///

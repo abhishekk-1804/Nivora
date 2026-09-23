@@ -29,7 +29,7 @@ class FirstUseGuideOverlay extends StatelessWidget {
       color: AppColors.brandAction,
       title: 'Log your cycle',
       body:
-          'Tap the red "Log Cycle" card to record your period, flow, pain, and symptoms. No perfect data needed — log what you have.',
+          'Tap the red "Log Cycle" card to record your period, flow, pain, and symptoms. No perfect data needed - log what you have.',
     ),
     _GuideStep(
       icon: Icons.battery_charging_full_rounded,
@@ -43,7 +43,7 @@ class FirstUseGuideOverlay extends StatelessWidget {
       color: Color(0xFF1565C0),
       title: 'Track your medication',
       body:
-          'Set up a routine once via the ＋ button. Every day, tap "Mark as Taken" — Nivora tracks adherence automatically.',
+          'Set up a routine once via the ＋ button. Every day, tap "Mark as Taken" - Nivora tracks adherence automatically.',
     ),
   ];
 

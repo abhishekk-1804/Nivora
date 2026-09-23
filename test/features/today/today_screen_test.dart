@@ -58,7 +58,7 @@ class SharedPreferencesMock implements SharedPreferences {
 }
 
 void main() {
-  group('TodayScreen — UI behavior', () {
+  group('TodayScreen - UI behavior', () {
     testWidgets('TC-T01: Screen renders without crashing', (tester) async {
       await tester.pumpWidget(makeWidget());
       await tester.pump();

@@ -217,7 +217,7 @@ DoctorReportData _aggregateClinicalData(Map<String, dynamic> payload) {
     adherencePercentage = (takenCount / logs.length * 100).round();
   }
 
-  // 5. PMDD Clustering — exclude anovulatory events (flowType == 'Anovulatory')
+  // 5. PMDD Clustering - exclude anovulatory events (flowType == 'Anovulatory')
   //    so 'Anovulatory / Missed Cycle' doesn't pollute the symptom phase table.
   final bleedingCycles = cycles.where((c) => c.flowType != 'Anovulatory').toList();
   Map<String, Map<String, int>> symptomPhases = {};

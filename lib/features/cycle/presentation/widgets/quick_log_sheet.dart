@@ -75,10 +75,10 @@ class _QuickLogSheetState extends ConsumerState<QuickLogSheet> {
   // ── Pain helpers ─────────────────────────────────────────────────────────────
   String _painLabel(int v) {
     if (v == 0) return 'No pain';
-    if (v <= 3) return '$v / 10 — Mild (manageable)';
-    if (v <= 6) return '$v / 10 — Moderate (interferes with daily tasks)';
-    if (v <= 9) return '$v / 10 — Severe (disabling)';
-    return '10 / 10 — Unbearable';
+    if (v <= 3) return '$v / 10 - Mild (manageable)';
+    if (v <= 6) return '$v / 10 - Moderate (interferes with daily tasks)';
+    if (v <= 9) return '$v / 10 - Severe (disabling)';
+    return '10 / 10 - Unbearable';
   }
 
   Color _painColor(int v) {
@@ -121,7 +121,7 @@ class _QuickLogSheetState extends ConsumerState<QuickLogSheet> {
       clotSize: parsedClot,
       isFlooding: _isFlooding,
       isTrueCycleStart: _isTrueCycleStart,
-      // Store null if pain wasn't touched (0 from default) — ambiguous for analytics.
+      // Store null if pain wasn't touched (0 from default) - ambiguous for analytics.
       // A slider movement changes _painIntensity; we track this via the onChanged callback.
       painIntensity: _painIntensity,
       painReliefTaken: _painReliefTaken,
@@ -591,7 +591,7 @@ class _QuickLogSheetState extends ConsumerState<QuickLogSheet> {
     );
   }
 
-  /// isTrueCycleStart toggle — auto-suggested by flow, user can override.
+  /// isTrueCycleStart toggle - auto-suggested by flow, user can override.
   Widget _buildCycleStartToggle() {
     return Material(
       color: AppColors.cardBg,
@@ -626,7 +626,7 @@ class _QuickLogSheetState extends ConsumerState<QuickLogSheet> {
         ),
         subtitle: Text(
           _isTrueCycleStart
-              ? 'Marked as the start of a new cycle — affects cycle length in your report.'
+              ? 'Marked as the start of a new cycle - affects cycle length in your report.'
               : 'Switch on if this is Day 1. Off = mid-cycle spotting / breakthrough bleeding.',
           style: const TextStyle(
             color: AppColors.mutedSage,

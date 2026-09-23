@@ -67,7 +67,7 @@ void main() {
     _clearAllPlatformChannels();
   });
 
-  group('SplashScreen — Widget Tests', () {
+  group('SplashScreen - Widget Tests', () {
     testWidgets('Renders splash screen assets and text correctly', (WidgetTester tester) async {
       final db = AppDatabase.forTesting(NativeDatabase.memory());
       final prefs = await SharedPreferences.getInstance();

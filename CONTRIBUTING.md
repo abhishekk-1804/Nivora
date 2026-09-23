@@ -1,40 +1,64 @@
-# Contributing to Nivora Health
+# Contributing to Nivora
 
-Thank you for your interest in contributing to the Nivora Health Application! 
+Thank you for taking the time to improve Nivora. Contributions are welcome when they preserve the project's local-first design, treat health information carefully, and make implementation status clear.
 
-## Licensing & Business Source License 1.1
+## Before you start
 
-Nivora Health is licensed under the **Business Source License 1.1 (BSL)**. 
-Please read the `LICENSE` file carefully before contributing or forking this repository.
+Read [`LICENSE`](LICENSE) before cloning, modifying, or redistributing the project. Nivora is licensed under the Business Source License 1.1, not a permissive open-source license. Follow the terms in the license file and do not assume that a public repository grants commercial-use rights.
 
-### What this means for you:
-1. **Personal / Educational Use**: You are fully permitted to clone, modify, and run this application strictly for personal health tracking, testing, and educational purposes.
-2. **Non-Commercial**: You cannot use this source code (or derivative works) in a commercial or production capacity without purchasing a commercial license from the Licensor, Susmita Dey.
-3. **Change Date**: On the Change Date (August 16, 2030), this license will automatically convert to the permissive **MIT License**.
+For security issues, use the process in [`SECURITY.md`](SECURITY.md) instead of opening a public issue with sensitive details.
 
-### Submitting Pull Requests
-If you wish to contribute bug fixes, translations, or new features back to the main repository:
-1. **Fork the repository** (keeping in mind the BSL terms).
-2. **Create a feature branch** (`git checkout -b feature/amazing-feature`).
-3. **Commit your changes** (`git commit -m 'Add amazing feature'`).
-4. **Push to the branch** (`git push origin feature/amazing-feature`).
-5. **Open a Pull Request**.
+## Development setup
 
-*Note: By submitting a Pull Request, you agree to license your contribution under the same BSL 1.1 terms as the main project.*
+Use a Flutter SDK compatible with the constraint in [`pubspec.yaml`](pubspec.yaml). Install dependencies with:
 
-## Development Setup
+```bash
+flutter pub get
+```
 
-1. **Flutter Version**: Ensure you are running Flutter SDK 3.13.0 or higher (Dart 3.0+).
-2. **Code Generation**: We use `drift` and `riverpod`. If you modify database schemas or providers, you must run the code generator:
-   ```bash
-   dart run build_runner build --delete-conflicting-outputs
-   ```
-3. **Testing**: Before submitting a PR, ensure all unit, database, and integration tests pass:
-   ```bash
-   flutter test
-   ```
+If you change Drift tables, DAOs, or annotated Riverpod providers, regenerate code:
 
-## Architectural Guidelines
-- **No Cloud Data**: Nivora is strictly a local-first application. Do not submit PRs that add third-party analytics (e.g., Firebase Analytics, Mixpanel) or external database syncing unless explicitly built as an end-to-end encrypted backup feature managed by the user.
-- **State Management**: Use `flutter_riverpod`. Avoid `setState` for global logic.
-- **Clinical Accuracy**: Any changes to cycle tracking or symptom clustering must adhere to DSM-5 criteria and be verified in `test/core/database/report_dao_test.dart`.
+```bash
+dart run build_runner build --delete-conflicting-outputs
+```
+
+Run analysis and tests before submitting a change:
+
+```bash
+dart analyze
+flutter test
+```
+
+Run integration tests separately on a configured emulator or device:
+
+```bash
+flutter test integration_test
+```
+
+## Making a change
+
+1. Create a focused branch from the current default branch.
+2. Keep each change small enough to review.
+3. Add or update tests for behavior changes.
+4. Update documentation when a public flow, data model, permission, backup format, or security property changes.
+5. Use synthetic data only. Do not add real health records, exported backups, device identifiers, or credentials.
+6. Open a pull request using the repository template and describe limitations or unverified behavior.
+
+## Engineering expectations
+
+Use Flutter and Riverpod conventions already present in the codebase. Keep persistence behind Drift DAOs and preserve migration compatibility. When changing cycle calculations or report aggregation, explain the rule in code and add fixtures that cover edge cases. Do not describe a calculation as a diagnosis or clinical validation unless independent evidence supports that claim.
+
+Preserve the offline product boundary. Do not add analytics, advertising, remote synchronization, or a new external service without a documented design review and an explicit change to the project's privacy model.
+
+Notification changes must account for platform permissions, time zones, inexact Android scheduling, and lifecycle rehydration. Authentication and privacy-overlay changes require platform-aware tests and should be checked on physical devices before release claims are made.
+
+## Pull request checklist
+
+- [ ] The change has a clear user or engineering purpose.
+- [ ] `dart analyze` passes.
+- [ ] Relevant `flutter test` tests pass.
+- [ ] Generated files are updated when required.
+- [ ] New behavior has focused tests.
+- [ ] Documentation distinguishes implemented, partial, planned, and unverified behavior.
+- [ ] No sensitive data, credentials, or generated backups are included.
+- [ ] License and privacy implications are understood.

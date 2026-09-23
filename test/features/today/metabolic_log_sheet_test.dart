@@ -13,7 +13,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  group('MetabolicLogSheet — Widget Tests', () {
+  group('MetabolicLogSheet - Widget Tests', () {
     testWidgets('Renders all fields and titles correctly', (tester) async {
       final db = AppDatabase.forTesting(NativeDatabase.memory());
       final prefs = await SharedPreferences.getInstance();

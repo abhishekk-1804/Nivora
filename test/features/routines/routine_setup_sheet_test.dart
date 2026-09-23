@@ -22,7 +22,7 @@ Widget makeTestWidget({Routine? routine}) {
 }
 
 void main() {
-  group('RoutineSetupSheet — form behavior', () {
+  group('RoutineSetupSheet - form behavior', () {
     testWidgets('TC001: Shows "Add Medication" title in add mode',
         (tester) async {
       await tester.pumpWidget(makeTestWidget());

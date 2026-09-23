@@ -335,7 +335,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
             child: Text(
               isCustomRange
                   ? 'We couldn\'t find any logged cycles, symptoms, or medications between the dates you selected. Try picking a wider date range.'
-                  : 'Log your period and medication for a cycle or two — then your cycle lengths, adherence, and symptom patterns will appear here.',
+                  : 'Log your period and medication for a cycle or two - then your cycle lengths, adherence, and symptom patterns will appear here.',
               textAlign: TextAlign.center,
               style: const TextStyle(
                   color: AppColors.mutedSage, fontSize: 13, height: 1.5),
@@ -877,7 +877,7 @@ class _DonutPainter extends CustomPainter {
     // Track
     canvas.drawCircle(center, radius, trackPaint);
 
-    // Progress arc — starts at top (-π/2)
+    // Progress arc - starts at top (-π/2)
     final sweepAngle = 2 * math.pi * percentage;
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),

@@ -12,7 +12,7 @@ class CycleEvents extends Table {
   TextColumn get symptoms => text().nullable()(); // Comma-separated list
   TextColumn get notes => text().nullable()();
   BoolColumn get isTrueCycleStart => boolean().withDefault(const Constant(true))();
-  // Legacy field kept for backward compat — new code uses painIntensity + painReliefTaken instead.
+  // Legacy field kept for backward compat - new code uses painIntensity + painReliefTaken instead.
   TextColumn get painReliefStatus => text().nullable()();
   // NRS 0-10 pain scale (null = not assessed; old events pre-v3 will be null)
   IntColumn get painIntensity => integer().nullable()();

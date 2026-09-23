@@ -47,7 +47,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Future<void> _requestNotificationPermission() async {
-    if (_notificationGranted) return; // already granted — no-op
+    if (_notificationGranted) return; // already granted - no-op
     setState(() => _checkingNotification = true);
 
     final granted = await NotificationService.requestPermission();
@@ -194,7 +194,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                   _buildPage(
                     title: 'Secured by\nBiometrics.',
-                    // Platform-neutral copy — no Apple-specific branding
+                    // Platform-neutral copy - no Apple-specific branding
                     description:
                         'Protected by biometric authentication (Face ID, '
                         'fingerprint, or PIN) and end-to-end encrypted backups.',
@@ -251,7 +251,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
 
-            // ── Page dots — always visible ────────────────────────────────
+            // ── Page dots - always visible ────────────────────────────────
             Padding(
               padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
               child: Row(
@@ -273,7 +273,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
 
-            // ── Footer button — full-width "Get Started" on last page ─────
+            // ── Footer button - full-width "Get Started" on last page ─────
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
               child: AnimatedSwitcher(
@@ -334,7 +334,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  /// Notification button widget — shows granted/pending state with animation.
+  /// Notification button widget - shows granted/pending state with animation.
   Widget _buildNotificationWidget() {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 350),

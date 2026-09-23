@@ -342,8 +342,8 @@ class _RoutineSetupSheetState extends ConsumerState<RoutineSetupSheet> {
                       Expanded(
                         child: Text(
                           isToday
-                              ? 'Starting today — Day 1 will be logged from today onwards. You can backdate if your doctor prescribed earlier.'
-                              : 'Future start date set — tracking will begin when that day arrives.',
+                              ? 'Starting today - Day 1 will be logged from today onwards. You can backdate if your doctor prescribed earlier.'
+                              : 'Future start date set - tracking will begin when that day arrives.',
                           style: const TextStyle(
                             color: AppColors.brandAction,
                             fontSize: 12,

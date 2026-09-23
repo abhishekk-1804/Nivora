@@ -20,7 +20,7 @@ Widget makeTestWidget() {
 }
 
 void main() {
-  group('QuickLogSheet — form behavior', () {
+  group('QuickLogSheet - form behavior', () {
     testWidgets('TC001: Sheet renders without crashing', (tester) async {
       await tester.pumpWidget(makeTestWidget());
       await tester.pumpAndSettle();

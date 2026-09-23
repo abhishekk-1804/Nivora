@@ -16,7 +16,7 @@ ProviderContainer makeContainer(AppDatabase db) {
 }
 
 void main() {
-  group('TodayController — state computation', () {
+  group('TodayController - state computation', () {
     late ProviderContainer container;
     late AppDatabase db;
     late ProviderSubscription subscription;
