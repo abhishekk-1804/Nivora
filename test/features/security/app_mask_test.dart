@@ -80,7 +80,7 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: const ImyraApp(),
+          child: const NivoraApp(),
         ),
       );
 
@@ -107,7 +107,7 @@ void main() {
       await tester.pump(const Duration(seconds: 2));
       // 2. Navigation transition 500ms
       await tester.pump(const Duration(milliseconds: 500));
-      // 3. ImyraApp authentication guard 600ms
+      // 3. NivoraApp authentication guard 600ms
       await tester.pump(const Duration(milliseconds: 600));
       // 4. _authenticate 500ms debounce
       await tester.pump(const Duration(milliseconds: 500));
