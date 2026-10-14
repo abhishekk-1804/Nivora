@@ -2,7 +2,7 @@
 
 **Application Name:** Nivora  
 **Application ID:** `com.nivora.health`  
-**Target Release Version:** `1.0.0-beta.5` (Build `5`)  
+**Target Release Version:** `1.0.0-beta.6` (Build `6`)  
 **Repository:** `D:\imyra_health`  
 
 ---

@@ -43,29 +43,52 @@ jobs:
 
       - name: Restore Android signing key
         env:
-          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 || secrets.KEYSTORE_BASE64 || secrets.ANDROID_KEYSTORE || secrets.RELEASE_KEYSTORE_BASE64 }}
-          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || secrets.KEYSTORE_PASSWORD || secrets.STORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD || secrets.KEY_PASSWORD }}
+          S_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          S_KEYSTORE_BASE64_ALT: ${{ secrets.KEYSTORE_BASE64 }}
+          S_ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          S_RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          V_KEYSTORE_BASE64: ${{ vars.ANDROID_KEYSTORE_BASE64 }}
+          V_KEYSTORE_BASE64_ALT: ${{ vars.KEYSTORE_BASE64 }}
+
+          S_STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          S_STORE_PASSWORD_ALT: ${{ secrets.KEYSTORE_PASSWORD }}
+          S_STORE_PASSWORD_ALT2: ${{ secrets.STORE_PASSWORD }}
+          V_STORE_PASSWORD: ${{ vars.ANDROID_KEYSTORE_PASSWORD }}
+          V_STORE_PASSWORD_ALT: ${{ vars.KEYSTORE_PASSWORD }}
+
+          S_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          S_KEY_ALIAS_ALT: ${{ secrets.KEY_ALIAS }}
+          V_KEY_ALIAS: ${{ vars.ANDROID_KEY_ALIAS }}
+          V_KEY_ALIAS_ALT: ${{ vars.KEY_ALIAS }}
+
+          S_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          S_KEY_PASSWORD_ALT: ${{ secrets.KEY_PASSWORD }}
+          V_KEY_PASSWORD: ${{ vars.ANDROID_KEY_PASSWORD }}
+          V_KEY_PASSWORD_ALT: ${{ vars.KEY_PASSWORD }}
         shell: bash
         run: |
           set -euo pipefail
 
+          KEYSTORE_BASE64="${S_KEYSTORE_BASE64:-${S_KEYSTORE_BASE64_ALT:-${S_ANDROID_KEYSTORE:-${S_RELEASE_KEYSTORE:-${V_KEYSTORE_BASE64:-${V_KEYSTORE_BASE64_ALT:-}}}}}}"
+          STORE_PASSWORD="${S_STORE_PASSWORD:-${S_STORE_PASSWORD_ALT:-${S_STORE_PASSWORD_ALT2:-${V_STORE_PASSWORD:-${V_STORE_PASSWORD_ALT:-}}}}}"
+          KEY_ALIAS="${S_KEY_ALIAS:-${S_KEY_ALIAS_ALT:-${V_KEY_ALIAS:-${V_KEY_ALIAS_ALT:-}}}}"
+          KEY_PASSWORD="${S_KEY_PASSWORD:-${S_KEY_PASSWORD_ALT:-${V_KEY_PASSWORD:-${V_KEY_PASSWORD_ALT:-}}}}"
+
           MISSING=0
-          if [ -z "${KEYSTORE_BASE64:-}" ]; then
-            echo "::error::Secret ANDROID_KEYSTORE_BASE64 (or KEYSTORE_BASE64) is empty or not configured"
+          if [ -z "${KEYSTORE_BASE64}" ]; then
+            echo "::error::Secret ANDROID_KEYSTORE_BASE64 is empty or not configured in repository secrets"
             MISSING=1
           fi
-          if [ -z "${STORE_PASSWORD:-}" ]; then
-            echo "::error::Secret ANDROID_KEYSTORE_PASSWORD (or STORE_PASSWORD) is empty or not configured"
+          if [ -z "${STORE_PASSWORD}" ]; then
+            echo "::error::Secret ANDROID_KEYSTORE_PASSWORD is empty or not configured in repository secrets"
             MISSING=1
           fi
-          if [ -z "${KEY_ALIAS:-}" ]; then
-            echo "::error::Secret ANDROID_KEY_ALIAS (or KEY_ALIAS) is empty or not configured"
+          if [ -z "${KEY_ALIAS}" ]; then
+            echo "::error::Secret ANDROID_KEY_ALIAS is empty or not configured in repository secrets"
             MISSING=1
           fi
-          if [ -z "${KEY_PASSWORD:-}" ]; then
-            echo "::error::Secret ANDROID_KEY_PASSWORD (or KEY_PASSWORD) is empty or not configured"
+          if [ -z "${KEY_PASSWORD}" ]; then
+            echo "::error::Secret ANDROID_KEY_PASSWORD is empty or not configured in repository secrets"
             MISSING=1
           fi
 
