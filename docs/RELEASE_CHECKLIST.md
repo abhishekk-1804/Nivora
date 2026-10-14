@@ -2,7 +2,7 @@
 
 **Application Name:** Nivora  
 **Application ID:** `com.nivora.health`  
-**Target Release Version:** `1.0.0-beta.4` (Build `4`)  
+**Target Release Version:** `1.0.0-beta.5` (Build `5`)  
 **Repository:** `D:\imyra_health`  
 
 ---
@@ -25,7 +25,7 @@
 
 ## 2. Developer Production Keystore Setup (Required Before Store Submission)
 
-The release compilation currently falls back to the Android debug keystore because `android/key.properties` is omitted (ensuring no private credentials are ever checked into source control).
+The release compilation strictly requires production signing credentials via `android/key.properties` or environment variables (debug fallback is disabled for release builds to ensure no unsigned or debug-signed releases are ever produced).
 
 To generate and attach the production keystore:
 
