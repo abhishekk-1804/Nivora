@@ -11,7 +11,7 @@ class NotificationService {
     tz.initializeTimeZones();
 
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/launcher_icon');
 
     // requestAlertPermission: false - onboarding owns the first-time system prompt.
     // We only initialise here; the user explicitly grants permission on page 2 of onboarding.
